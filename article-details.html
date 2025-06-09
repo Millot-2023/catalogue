@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Titre de Ma Page Simple</title>
-    <link rel="stylesheet" href="css/styles.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>Détails de l'Article</title>
+    <meta name="description" content="Contenu détaillé de l'article.">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -31,28 +33,12 @@
     </header>
 
     <main class="main-content-wrapper">
-        <h1>Ceci est le Titre Principal de la Page</h1>
-        <p>Ceci est un paragraphe introductif. Il est conçu pour être facile à lire, avec une bonne taille de police et un interligne agréable. L'objectif est de fournir un contenu clair et concis.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-        <h2>Un Sous-titre pour Organiser</h2>
-        <p>Ce paragraphe présente une nouvelle idée ou une section différente. Les sous-titres aident à diviser le texte et à améliorer la lisibilité. Ils sont essentiels pour structurer un long contenu.</p>
-
-        <h3>Un point plus précis</h3>
-        <ul>
-            <li>Premier élément de liste pour un point important.</li>
-            <li>Deuxième élément, pour un détail supplémentaire.</li>
-            <li>Troisième élément, pour conclure l'idée.</li>
-        </ul>
-
-        <img src="images/photo-640x480.png" alt="Image illustrative du contenu" style="max-width: 100%; height: auto; display: block; margin: 30px auto; border-radius: 8px;">
-
-        <blockquote>
-            "Ceci est une citation importante ou un passage mis en avant pour attirer l'attention du lecteur."
-            <cite> - Nom de l'Auteur ou Source</cite>
-        </blockquote>
-
-        <p>Un dernier paragraphe pour conclure le contenu de cette page simple. Nous nous assurons que tous les éléments sont bien espacés et lisibles sur n'importe quel appareil.</p>
+        <section class="content-section">
+            <div id="article-details-container" class="article-detail">
+                <p style="text-align: center;">Chargement de l'article...</p>
+            </div>
+            <p id="message-area" class="form-message" style="text-align: center;"></p>
+        </section>
     </main>
 
     <footer class="main-footer">
@@ -64,6 +50,68 @@
             </ul>
         </div>
     </footer>
+
     <script src="js/script.js" defer></script>
+    <script>
+        const articleDetailsContainer = document.getElementById('article-details-container');
+        const messageArea = document.getElementById('message-area');
+        const apiUrl = 'http://localhost/catalogue/backend/get_article_by_id.php';
+
+        async function fetchArticleDetails() {
+            messageArea.textContent = ''; // Effacer les messages précédents
+            articleDetailsContainer.innerHTML = '<p style="text-align: center;">Chargement de l\'article...</p>'; // Message de chargement
+
+            // 1. Récupérer l'ID de l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const articleId = urlParams.get('id');
+
+            if (!articleId) {
+                articleDetailsContainer.innerHTML = '<p style="text-align: center;">ID d\'article manquant dans l\'URL.</p>';
+                messageArea.textContent = 'Veuillez spécifier un ID d\'article valide.';
+                messageArea.style.color = 'red';
+                return; // Arrêter la fonction si l'ID est manquant
+            }
+
+            try {
+                // 2. Faire un appel à get_article_by_id.php avec l'ID
+                const response = await fetch(`${apiUrl}?id=${articleId}`);
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+                const data = await response.json();
+
+                if (data.success && data.article) {
+                    articleDetailsContainer.innerHTML = ''; // Effacer le message de chargement
+
+                    // Mettre à jour le titre de la page
+                    document.title = `${data.article.titre} - Mon Catalogue`;
+
+                    // 3. Afficher les données de l'article
+                    articleDetailsContainer.innerHTML = `
+                        <img src="${data.article.image_url}" alt="Image de l'article : ${data.article.titre}" class="article-detail-image">
+                        <h1>${data.article.titre}</h1>
+                        <p class="article-detail-date">Publié le: ${data.article.date_publication}</p>
+                        <div class="article-content">
+                            <p>${data.article.contenu_complet}</p>
+                        </div>
+                        <a href="articles.html" class="back-to-articles-btn">Retour aux articles</a>
+                    `;
+                } else {
+                    articleDetailsContainer.innerHTML = '<p style="text-align: center;">Article non trouvé.</p>';
+                    messageArea.textContent = data.message || 'L\'article demandé n\'existe pas.';
+                    messageArea.style.color = 'orange';
+                }
+
+            } catch (error) {
+                console.error('Erreur lors de la récupération de l\'article:', error);
+                articleDetailsContainer.innerHTML = '<p style="text-align: center;">Erreur lors du chargement de l\'article.</p>';
+                messageArea.textContent = `Impossible de charger l\'article. Erreur: ${error.message}`;
+                messageArea.style.color = 'red';
+            }
+        }
+
+        // Appeler la fonction au chargement de la page
+        document.addEventListener('DOMContentLoaded', fetchArticleDetails);
+    </script>
 </body>
 </html>
