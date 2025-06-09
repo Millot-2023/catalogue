@@ -1,0 +1,26 @@
+// ==============================
+// _header.scss
+// Styles pour l'en-tête principal du site
+// ==============================
+.main-header {
+  background-color: $dark-color;
+  color: $white;
+  padding: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+// Style du logo
+.logo {
+    color: $white;
+    font-size: 1.8em;
+    font-weight: bold;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    height: 100%; // Assurez-vous que le logo prend la hauteur du header si nécessaire
+    padding: 0 20px;
+}

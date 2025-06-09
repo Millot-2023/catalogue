@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles - Mon Catalogue</title>
+    <meta name="description" content="Découvrez mes dernières publications et analyses approfondies.">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="main-nav">
+            <a href="index.html" class="logo">Christophe MILLOT</a>
+            <div class="nav-right-container">
+                <ul class="nav-menu">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="articles.html">Articles</a></li>
+                    <li><a href="#">Recherches</a></li>
+                    <li><a href="admin-articles.html">Admin</a></li>
+                </ul>
+                <button class="nav-toggle" aria-label="Toggle navigation">
+                    <span class="hamburger"></span>
+                    <span class="hamburger"></span>
+                    <span class="hamburger"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <section class="page-header-banner">
+        <div class="page-header-content">
+            <h1>Nos Articles</h1>
+            <p>Découvrez mes dernières publications et analyses approfondies.</p>
+        </div>
+    </section>
+
+    <main class="main-content-wrapper">
+        <section class="content-section">
+            <h2>Derniers Articles</h2>
+            <div id="articles-container" class="articles-grid">
+                <p style="text-align: center;">Chargement des articles...</p>
+            </div>
+            <p id="message-area" class="form-message" style="text-align: center;"></p>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Christophe MILLOT. Tous droits réservés.</p>
+            <ul class="footer-links">
+                <li><a href="#">Mentions Légales</a></li>
+                <li><a href="#">Politique de Confidentialité</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="js/script.js" defer></script>
+    <script>
+        // CORRECTION ICI : ID harmonisé à "articles-container"
+        const articlesContainer = document.getElementById('articles-container');
+        // Ajout de la zone de message
+        const messageArea = document.getElementById('message-area');
+        const apiUrl = 'http://localhost/catalogue/backend/get_articles.php';
+
+        async function fetchArticles() {
+            messageArea.textContent = ''; // Clear previous messages
+            articlesContainer.innerHTML = '<p style="text-align: center;">Chargement des articles...</p>'; // Message de chargement
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+                const data = await response.json();
+
+                if (data.success && data.articles && data.articles.length > 0) {
+                    articlesContainer.innerHTML = ''; // Clear loading message
+
+                    data.articles.forEach(article => {
+                        const articleCard = document.createElement('article');
+                        articleCard.classList.add('article-card');
+
+                        articleCard.innerHTML = `
+                            <div class="article-image-container">
+                                <img src="${article.image_url}" alt="Image de l'article : ${article.titre}">
+                            </div>
+                            <div class="card-content">
+                                <h3>${article.titre}</h3>
+                                <p class="article-date">Publié le: ${article.date_publication}</p>
+                                <p>${article.resume}</p>
+                                <div class="card-button-wrapper">
+                                    <a href="${article.article_full_path}" class="read-more-btn">Lire la suite</a>
+                                </div>
+                            </div>
+                        `;
+                        articlesContainer.appendChild(articleCard);
+                    });
+                } else {
+                    articlesContainer.innerHTML = '<p style="text-align: center;">Aucun article trouvé pour le moment.</p>';
+                    messageArea.textContent = data.message || 'Aucun article à afficher.';
+                    messageArea.style.color = 'orange'; // Couleur pour les messages d'absence d'articles
+                }
+
+            } catch (error) {
+                console.error('Erreur lors de la récupération des articles:', error);
+                articlesContainer.innerHTML = '<p style="text-align: center;">Erreur lors du chargement des articles.</p>';
+                messageArea.textContent = `Impossible de charger les articles. Erreur: ${error.message}`;
+                messageArea.style.color = 'red'; // Couleur pour les erreurs graves
+            }
+        }
+
+        // Appeler la fonction au chargement de la page
+        document.addEventListener('DOMContentLoaded', fetchArticles);
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+/* Styles spécifiques pour les formulaires de la page d'administration */
+
+// Conteneur principal du formulaire
+.admin-form-section {
+    background-color: #ffffff; /* Fond blanc */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre douce */
+    max-width: 700px; /* Limite la largeur du formulaire */
+    margin: 40px auto; /* Centre le formulaire horizontalement */
+    /* Pas de style pour h1/h2 ici, ils prendront les styles de _typography ou base */
+}
+
+.admin-form-section h1,
+.admin-form-section h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    /* Les couleurs et polices seront héritées de _typography.scss ou base.scss */
+}
+
+// Styles pour les groupes de champs (label + input/textarea)
+.form-group {
+    margin-bottom: 25px; /* Espacement entre les groupes de champs */
+    label {
+        display: block; /* Chaque label sur sa propre ligne */
+        margin-bottom: 10px;
+        font-weight: 600; /* Texte du label en gras */
+        /* Les couleurs et polices seront héritées de _typography.scss ou base.scss */
+        font-size: 1.1em;
+    }
+    input[type="text"],
+    input[type="url"],
+    input[type="date"],
+    textarea {
+        width: 100%; /* Prend toute la largeur disponible */
+        padding: 12px 15px; /* Padding interne */
+        border: 1px solid #c0c0c0; /* Bordure grise par défaut */
+        border-radius: 6px; /* Bords légèrement arrondis */
+        font-size: 1em; /* Taille de police du texte saisi */
+        line-height: 1.5;
+        box-sizing: border-box; /* S'assure que padding et border sont inclus dans la largeur */
+        &:focus {
+            border-color: #3498db; /* Bordure bleue au focus (ajustez si votre thème a une couleur de focus spécifique) */
+            outline: none; /* Supprime l'outline par défaut du navigateur */
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); /* Ombre légère au focus */
+        }
+    }
+    textarea {
+        resize: vertical; /* Permet uniquement le redimensionnement vertical */
+        min-height: 120px; /* Hauteur minimale pour les zones de texte */
+    }
+}
+
+// Styles pour le bouton de soumission
+.btn-primary {
+    /* REMPLACER LES LIGNES SUIVANTES */
+    // display: block; /* Supprimez ou commentez cette ligne */
+    // width: 100%;    /* Supprimez ou commentez cette ligne */
+
+    /* AJOUTER / MODIFIER CES LIGNES */
+    display: inline-block; /* Fait que le bouton ne prend que la largeur de son contenu */
+    padding: 8px 15px;     /* Resserre le bouton (ajustez ces valeurs) */
+    font-size: 0.9em;      /* Diminue la taille du texte (ajustez cette valeur) */
+
+    /* CONSERVEZ CES LIGNES (ou vos valeurs spécifiques) */
+    background-color: #2ecc71; /* Vert clair, ou votre couleur primaire actuelle */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+
+    &:hover {
+        background-color: #27ae60; /* Vert un peu plus foncé au survol */
+        transform: translateY(-2px);
+    }
+    &:active {
+        background-color: #1abc9c; /* Vert légèrement différent au clic */
+        transform: translateY(0);
+    }
+}

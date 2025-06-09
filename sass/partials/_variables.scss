@@ -1,0 +1,50 @@
+// ==============================
+// _variables.scss
+// Définition des variables globales (couleurs, polices, tailles, etc.)
+// ==============================
+
+// Importation du module math pour les opérations de division
+@use "sass:math"; // <-- AJOUTEZ CETTE LIGNE
+
+// Couleurs
+$primary-color: #28a745;
+$dark-color: #343a40;
+$white: #ffffff;
+$light-gray: #f8f9fa;
+$medium-gray: #dee2e6;
+
+$text-color: #495057;
+$text-color-light: #999;
+
+$background-color: $light-gray;
+$heading-color: $dark-color;
+
+// Couleurs de messages / feedback
+$success-color: #28a745;
+$error-color: #dc3545;
+$info-color: #17a2b8;
+$warning-color: #ffc107;
+
+// Espacements (utilisés pour les marges, paddings, etc.)
+$spacing-unit: 8px;
+$spacing-xs: math.div($spacing-unit, 2); // <-- MODIFIÉ ICI
+$spacing-sm: $spacing-unit;
+$spacing-md: ($spacing-unit * 2);
+$spacing-lg: ($spacing-unit * 3);
+$spacing-xl: ($spacing-unit * 5);
+$spacing-xxl: ($spacing-unit * 7);
+
+
+// Breakpoints (pour les media queries)
+$breakpoint-mobile: 768px;
+// $breakpoint-tablet: 1024px;
+
+// Autres variables globales (facultatif, à ajouter si utilisé fréquemment)
+// $base-font-size: 16px;
+// $line-height: 1.6;
+// $border-radius: 5px;
+// $box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+// !IMPORTANT : Ce fichier contient les définitions des variables globales du projet.
+// Toute modification ici impactera l'ensemble des styles qui utilisent ces variables.
+// Soyez vigilant lors des changements.

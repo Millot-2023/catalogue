@@ -1,0 +1,43 @@
+// Dans votre fichier Sass (ex: src/partials/_buttons.scss)
+
+// Dans src/partials/_buttons.scss
+
+// Dans src/partials/_buttons.scss
+
+// Dans src/partials/_buttons.scss
+
+// Dans src/partials/_buttons.scss
+
+.button {
+    display: inline-block; /* C'est CRUCIAL. Assurez-vous que c'est bien PRÉSENT. */
+
+    background-color: #2ecc71; /* Votre couleur primaire verte */
+    color: white;             /* Texte blanc pour la lisibilité */
+
+    padding: 12px 25px;       /* Ajustez ces valeurs pour la taille désirée */
+    font-size: 1em;           /* Ajustez la taille de la police */
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;    /* Supprime le soulignement des liens */
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: background-color 0.3s ease; /* Seulement la transition de couleur */
+
+    &:hover {
+        background-color: #27ae60;
+        // Supprimez ou commentez la ligne transform: translateY(-2px); si elle est là
+    }
+    &:active {
+        background-color: #1abc9c;
+        transform: translateY(0);
+    }
+}
+
+// ... le reste de votre _buttons.scss
+
+// ... le reste de votre code _buttons.scss
+
+// ... le reste de votre code _buttons.scss
+
+// ... le reste de votre code _buttons.scss (comme .btn-primary, etc.)

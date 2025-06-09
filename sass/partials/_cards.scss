@@ -1,0 +1,121 @@
+// ==============================
+// _cards.scss
+// Styles pour la grille d'articles et chaque carte d'article
+// ==============================
+
+// Styles pour la section qui contient la grille d'articles
+.articles-list-section {
+    padding: 20px;
+    background-color: #f9f9f9; // Assurez-vous que cette couleur correspond à votre palette
+    border-top: 1px solid #eee; // Ajoutez ou retirez selon votre design global
+}
+
+// Styles pour la grille d'articles
+.articles-grid {
+    max-width: 960px;
+    margin: 40px auto;
+    padding: 0 20px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+
+    // Ajustement du titre si il est directement dans la grille
+    h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: $primary-color; // Assurez-vous que $primary-color est défini dans _variables.scss
+        grid-column: 1 / -1; // Pour que le titre s'étende sur toute la largeur de la grille
+    }
+
+    @media (max-width: $breakpoint-mobile) { // Assurez-vous que $breakpoint-mobile est défini dans _variables.scss
+        grid-template-columns: 1fr;
+        padding: 0 15px;
+        margin-top: 20px;
+
+        h2 {
+            grid-column: 1 / -1;
+        }
+    }
+}
+
+// Styles pour chaque carte d'article
+.article-card {
+    background-color: $white; // Assurez-vous que $white est défini dans _variables.scss
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: left; // Garde l'alignement du texte à gauche pour le contenu
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+        transform: translateY(-5px);
+    }
+
+    img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        display: block;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    h3 {
+        color: $primary-color;
+        font-size: 1.4em;
+        margin: 10px 15px;
+    }
+
+    p {
+        font-size: 0.9em;
+        color: $text-color; // Assurez-vous que $text-color est défini
+        margin: 0 15px 15px;
+        flex-grow: 1;
+    }
+
+    .article-date {
+        font-size: 0.8em;
+        color: $text-color-light; // Assurez-vous que $text-color-light est défini
+        margin: 0 15px 5px;
+        font-style: italic;
+    }
+
+    // CONTENEUR POUR LE BOUTON : C'EST LA CLÉ POUR LE CENTRAGE !
+    // Si votre bouton est directement à la fin de .article-card, il faudra le wrapper
+    // Pour une meilleure organisation et un centrage facile du bouton.
+    .card-button-wrapper {
+        // Applique text-align sur le parent de l'inline-block pour le centrer
+        text-align: center;
+        margin-top: auto; // Pousse le wrapper vers le bas si la carte est un flex-column
+        padding: 0 15px; // Assure que le bouton n'est pas collé aux bords de la carte
+    }
+
+
+    // Style pour le bouton "Lire la suite"
+    // C'est votre ancien .btn-primary, adapté pour les cartes
+    // J'ai renommé cette classe pour éviter les conflits si vous avez un .btn-primary global différent.
+    // Il faudra mettre la classe "read-more-btn" sur vos liens "Lire la suite" dans articles.html
+    .read-more-btn {
+        display: inline-block; // Permet au bouton de s'adapter à son contenu
+        background-color: $primary-color;
+        color: $white;
+        padding: 8px 15px; // Taille ajustée pour les cartes (plus petit)
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 0.9em; // Ajuste la taille de la police du bouton
+        font-weight: bold; // Pour le texte en gras
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: darken($primary-color, 10%);
+        }
+        // Pas besoin de &:active ici à moins d'une interaction spécifique
+    }
+}

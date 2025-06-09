@@ -1,0 +1,171 @@
+// ==============================
+// _nav.scss
+// Styles pour la navigation principale (desktop et mobile)
+// ==============================
+
+// Styles pour la navigation principale
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    height: 80px;
+    background-color: $primary-color;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /*position:fixed;*/ // Laisser commenté si le main-header est déjà fixed
+}
+
+// Conteneur de droite (menu et toggle)
+.nav-right-container {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+}
+
+// Menu de navigation (Desktop)
+.nav-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 30px;
+    height: 100%;
+
+    li {
+        height: 100%;
+        display: flex;
+        align-items: stretch;
+        background-color: transparent;
+        transition: background-color 0.3s ease, border-radius 0.3s ease;
+
+        &:hover {
+            background-color: lighten($primary-color, 10%);
+            border-radius: 5px;
+        }
+
+        a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 0 10px;
+            text-decoration: none;
+            color: $white;
+            font-weight: bold;
+            transition: color 0.3s ease-in-out;
+            background-color: transparent;
+
+            &:hover {
+                color: darken($white, 10%);
+            }
+        }
+    }
+}
+
+// Bouton Toggle pour la navigation mobile (hamburger)
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: lighten($primary-color, 10%);
+    }
+
+    .hamburger {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: $white;
+        margin: 5px 0;
+        transition: all 0.3s ease-in-out;
+    }
+
+    // Animation X du burger quand le menu est actif
+    &.active .hamburger:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    &.active .hamburger:nth-child(2) { opacity: 0; }
+    &.active .hamburger:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+}
+
+// Media Query pour les écrans mobiles
+@media (max-width: $breakpoint-mobile) {
+    .nav-toggle {
+        display: block;
+    }
+
+    // NOUVEL AJOUT IMPORTANT ICI : Force la largeur du conteneur principal de la nav
+    .main-nav {
+        width: 100% !important;
+        flex-grow: 1; // AJOUTÉ : Permet au nav de prendre toute la place disponible
+    }
+
+    .nav-right-container {
+        padding: 0; // Réinitialise le padding pour le mode mobile
+    }
+
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 80px;
+        left: 0;
+        width: 100% !important; // Gardez le !important pour l'instant
+        background-color: $primary-color;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        z-index: 999;
+        gap: 0;
+
+        &.active {
+            display: flex;
+        }
+
+        li {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: $primary-color;
+            transition: background-color 0.3s ease;
+            height: auto; // Important pour la flexibilité des éléments de liste
+            display: flex; // Pour centrer le lien à l'intérieur du li
+            align-items: stretch; // Pour que le lien prenne toute la hauteur du li
+
+            &:hover {
+                background-color: darken($primary-color, 5%);
+                border-radius: 0;
+            }
+
+            a {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: auto; // Assure que le lien ne soit pas contraint en hauteur
+                width: 100%;
+                color: $white;
+                text-decoration: none;
+                font-weight: bold;
+                padding: 40px 0; // Padding généreux pour les zones de clic sur mobile
+                margin: 0;
+                transition: color 0.3s ease-in-out;
+                background-color: transparent;
+
+                &:hover {
+                    color: $white;
+                }
+            }
+        }
+    }
+}
+
+// Styles spécifiques pour les écrans larges (Desktop)
+@media (min-width: ($breakpoint-mobile + 1px)) {
+    .nav-toggle {
+        display: none;
+    }
+
+    .nav-menu {
+        display: flex;
+    }
+}

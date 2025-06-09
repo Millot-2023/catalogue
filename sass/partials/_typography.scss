@@ -1,0 +1,76 @@
+// ==============================
+// _typography.scss
+// Styles de typographie globaux
+// ==============================
+
+// Styles génériques pour tous les titres (principalement la police)
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', sans-serif; // Assurez-vous que Roboto est bien importé et chargé
+    // Les marges, line-height, font-weight et couleur de base sont définis dans _base.scss
+}
+
+
+
+
+
+
+
+
+h1 {
+    font-size: 2.5em; // Taille spécifique pour h1
+    // text-align: center; // Si h1 doit être centré par défaut GLOBALEMENT, sinon utilisez une classe utilitaire
+
+
+
+    color: black; // Utilisation de la variable pour la couleur blanche
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+h2 {
+    font-size: 2em; // Exemple de taille pour h2
+    margin-bottom: $spacing-lg; // Exemple: plus d'espace sous le h2
+}
+
+h3 {
+    font-size: 1.75em; // Exemple de taille pour h3
+    margin-bottom: $spacing-md;
+}
+
+h4 {
+    font-size: 1.5em; // Exemple de taille pour h4
+    margin-bottom: $spacing-md;
+}
+
+h5 {
+    font-size: 1.25em; // Exemple de taille pour h5
+    margin-bottom: $spacing-sm;
+}
+
+h6 {
+    font-size: 1em; // Exemple de taille pour h6
+    margin-bottom: $spacing-sm;
+}
+
+
+// Styles spécifiques pour les paragraphes si nécessaire, mais les bases sont dans _base.scss
+// p {
+//     // Vous pouvez ajouter ici des styles spécifiques aux paragraphes qui ne sont pas de base,
+//     // comme font-style, letter-spacing, etc.
+// }
+
+strong, b {
+    font-weight: 700; // C'est l'équivalent numérique de 'bold' pour Roboto, souvent plus fiable.
+}

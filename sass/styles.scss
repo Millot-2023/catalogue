@@ -1,0 +1,33 @@
+@charset "UTF-8"; // Laissez cette ligne si elle est présente, elle doit être la première
+
+// ==============================
+// styles.scss
+// Fichier principal de compilation Sass
+// ==============================
+
+// 1. Outils et Utilitaires
+@import 'partials/variables';
+@import 'partials/reset';
+@import 'partials/base';
+@import 'partials/typography';
+
+// 2. Mise en page principale
+@import 'partials/header';
+@import 'partials/nav';
+@import 'partials/footer';
+@import 'partials/hero';
+@import 'partials/content';
+
+// 3. Composants
+@import 'partials/buttons';
+@import 'partials/cards';
+@import 'partials/forms';
+
+// AJOUTEZ CETTE LIGNE POUR IMPORTER LE BANDEAU
+@import 'partials/page-banner'; // <--- C'EST LA LIGNE MANQUANTE !
+
+@import 'partials/admin'; // L'import d'admin était déjà là
+
+//A FAIRE !!!!
+
+/*C'est une bonne pratique de centraliser ce type de valeurs dans _variables.scss. Si light-gray (#f8f9fa) est très proche de #f9f9f9, ou si medium-gray (#dee2e6) ou une autre variable pourrait représenter #eee, vous pourriez les remplacer pour une meilleure maintenabilité. Mais ce n'est pas une erreur, juste une opportunité d'optimisation si vous le souhaitez.*/

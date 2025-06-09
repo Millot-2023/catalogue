@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feuille de Route - Mon Catalogue</title>
+    <meta name="description" content="Découvrez les prochaines étapes et les fonctionnalités à venir pour le projet.">
+    
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="main-nav">
+            <a href="../index.html" class="logo">Christophe MILLOT</a>
+            <div class="nav-right-container">
+                <ul class="nav-menu">
+                    <li><a href="../index.html">Accueil</a></li>
+                    <li><a href="../articles.html">Articles</a></li>
+                    <li><a href="#">Recherches</a></li>
+                    <li><a href="../admin-articles.html">Admin</a></li>
+                </ul>
+                <button class="nav-toggle" aria-label="Toggle navigation">
+                    <span class="hamburger"></span>
+                    <span class="hamburger"></span>
+                    <span class="hamburger"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content-wrapper">
+        <h1 id="article-main-title">Feuille de Route : Ce qu'il Reste à Accomplir</h1>
+
+        <img id="card-main-image" src="../images/hero-1920x1000.png" alt="Image illustrant les prochaines étapes" style="max-width: 100%; height: auto; display: block; margin: 30px auto; border-radius: 8px;">
+
+        <div id="article-introduction" class="article-section intro-section">
+            <p><span style="color: red;">Le projet est sur de bonnes rails, mais le voyage continue !</span> Cette section présente les prochaines étapes et les fonctionnalités que nous pourrions envisager d'ajouter pour enrichir encore davantage votre catalogue d'articles.</p>
+            <p>Notre objectif est de rendre la gestion de contenu toujours plus efficace et l'expérience utilisateur toujours plus agréable.</p>
+        </div>
+
+        <section class="article-section">
+            <h2>Améliorations Immédiates du Contenu</h2>
+            <p>Pour rendre les articles plus informatifs et plus attrayants dès maintenant, quelques ajustements peuvent être apportés aux données affichées.</p>
+            <ul>
+                <li><strong>Dynamiser la Date de Publication :</strong> Actuellement "Date inconnue", nous pourrions ajouter une balise spécifique dans chaque fichier HTML d'article pour que PHP l'extraie et l'affiche.</li>
+                <li><strong>Images Spécifiques aux Articles :</strong> Assurez-vous d'avoir une image pertinente (`hero-1920x1000.png` est un bon placeholder) pour chaque nouvel article créé.</li>
+            </ul>
+        </section>
+
+        <section class="article-section">
+            <h2>Gestion du Contenu et Expérience Utilisateur</h2>
+            <p>Pour une expérience complète et pour faciliter la navigation à mesure que le catalogue grandit, des fonctionnalités de gestion et d'organisation sont à considérer.</p>
+            <h3>Organisation et Navigation</h3>
+            <ul>
+                <li><strong>Catégories et Tags :</strong> Permettre d'assigner des catégories ou des mots-clés aux articles pour faciliter la recherche et le filtrage.</li>
+                <li><strong>Pagination :</strong> Mettre en place un système de pagination pour les pages d'articles afin d'éviter le chargement d'un trop grand nombre d'articles en une seule fois.</li>
+            </ul>
+            <h3>Facilitation de l'Édition (pour un futur clone)</h3>
+            <ul>
+                <li><strong>Interface d'Administration Simplifiée :</strong> Quand le clone du site sera prêt, nous pourrions envisager un formulaire sur `admin-articles.html` pour générer automatiquement les squelettes d'articles HTML, voire des formulaires pour éditer le contenu.</li>
+                <li><strong>Upload d'Images :</strong> Intégrer une fonction d'upload d'images directement depuis l'interface d'administration.</li>
+            </ul>
+        </section>
+
+        <section class="article-section">
+            <h2>Optimisation et Maintenance</h2>
+            <p>Le développement est un processus continu. L'optimisation du code et la maintenance sont essentielles pour la performance et la sécurité à long terme du site.</p>
+            <ul>
+                <li><strong>Nettoyage et Refactoring du Code :</strong> Revoir le code pour le rendre plus propre, plus efficace et plus facile à maintenir.</li>
+                <li><strong>Gestion des Erreurs :</strong> Améliorer la gestion des erreurs et l'affichage des messages pour l'utilisateur.</li>
+            </ul>
+        </section>
+
+        <section class="article-section">
+            <h2>Conclusion Provisoire</h2>
+            <p>Chaque fonctionnalité ajoutée est un pas de plus vers un système de gestion de contenu puissant et agréable à utiliser. Nous continuerons à itérer et à améliorer ce projet ensemble !</p>
+        </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Christophe MILLOT. Tous droits réservés.</p>
+            <ul class="footer-links">
+                <li><a href="#">Mentions Légales</a></li>
+                <li><a href="#">Politique de Confidentialité</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="../js/script.js" defer></script>
+</body>
+</html>

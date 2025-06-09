@@ -1,0 +1,71 @@
+// ==============================
+// _page-banner.scss
+// Styles pour les bandeaux compacts des pages secondaires
+// ==============================
+
+.page-header-banner {
+    width: 100%;
+    height: 400px; /* Hauteur du bandeau */
+    overflow: hidden;
+    position: relative; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: $white; 
+    background-color: #333; 
+    
+    /* NOUVEAU : GESTION DES IMAGES DE FOND POUR LE BANDEAU DIRECTEMENT SUR L'ÉLÉMENT */
+    background-size: cover; /* L'image couvrira entièrement le conteneur */
+    background-position: center; /* Centre l'image */
+    background-repeat: no-repeat; /* Évite la répétition de l'image */
+    
+    /* Image par défaut (pour mobile) */
+    background-image: url('../images/banner-articles-mobile-414x400.png'); /* Chemin vers l'image mobile */
+
+    // Overlay sombre pour améliorer la lisibilité du texte
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); // Ajustez l'opacité si besoin
+        z-index: 1;
+    }
+
+    /* Le bloc `img { ... }` est SUPPRIMÉ car l'image est maintenant un background */
+
+    .page-header-content {
+        position: relative; 
+        z-index: 5;
+        padding: 0 20px; 
+        max-width: 900px; 
+        margin: 0 auto; 
+
+        h1 {
+            font-size: 2.5em; 
+            margin-bottom: 0; 
+            color: $white; 
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
+        }
+
+        p { 
+            font-size: 1.1em;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+            margin-top: 5px;
+            margin-bottom: 0;
+        }
+    }
+
+    /* Media query pour les DESKTOPS (min-width: 769px) */
+    @media (min-width: 769px) {
+        background-image: url('../images/banner-articles-desktop-1920x400.png'); /* Chemin vers l'image desktop */
+    }
+
+    /* Media query pour les MOBILES (max-width: 768px) - les styles de base sont déjà pour mobile */
+    @media (max-width: 768px) {
+        height: 400px; /* Assure que la hauteur reste la même sur mobile */
+    }
+}

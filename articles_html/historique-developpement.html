@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique de Développement - Mon Catalogue</title>
+    <meta name="description" content="Découvrez l'évolution de notre projet de catalogue d'articles, des fondations aux dernières optimisations des chemins et des noms de fichiers.">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="main-nav">
+            <a href="../index.html" class="logo">Christophe MILLOT</a>
+            <div class="nav-right-container">
+                <ul class="nav-menu">
+                    <li><a href="../index.html">Accueil</a></li>
+                    <li><a href="../articles.html">Articles</a></li>
+                    <li><a href="#">Recherches</a></li>
+                    <li><a href="../admin-articles.html">Admin</a></li>
+                </ul>
+                <button class="nav-toggle" aria-label="Toggle navigation">
+                    <span class="hamburger"></span>
+                    <span class="hamburger"></span>
+                    <span class="hamburger"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content-wrapper">
+        <h1 id="article-main-title">Historique de Développement : De l'Idée au Catalogue Fonctionnel</h1>
+
+        <img id="card-main-image" src="../images/hero-1920x1000.png" alt="Image principale de l'article" style="max-width: 100%; height: auto; display: block; margin: 30px auto; border-radius: 8px;">
+
+        <div id="article-introduction" class="article-section intro-section">
+            <p><span style="color: red;">Bienvenue sur cet aperçu de notre parcours de développement !</span> Ce projet a démarré avec une idée simple : créer un catalogue d'articles dynamique, facile à gérer et visuellement attrayant. Chaque étape a été cruciale pour atteindre le Point Nemo actuel, où notre base est solide et opérationnelle.</p>
+            <p>Découvrez comment nous avons transformé un concept en une réalité fonctionnelle, étape par étape, en surmontant les défis techniques pour construire une solution robuste et flexible.</p>
+        </div>
+
+        <section class="article-section">
+            <h2>Les Fondations du Projet</h2>
+            <p>Tout a commencé par la mise en place de l'environnement de développement, utilisant XAMPP pour simuler un serveur local. Cela nous a permis de travailler efficacement avec PHP, HTML, CSS et JavaScript, jetant les bases techniques nécessaires.</p>
+            <ul>
+                <li><strong>Mise en place de l'environnement local :</strong> Installation et configuration de XAMPP.</li>
+                <li><strong>Structure de base du site :</strong> Création des fichiers HTML, CSS et JS principaux.</li>
+                <li><strong>Conception initiale :</strong> Établissement des maquettes pour les pages d'accueil et d'articles.</li>
+            </ul>
+        </section>
+
+        <section class="article-section">
+            <h2>Le Cœur Dynamique : Backend et Frontend</h2>
+            <p>L'intégration de PHP a été la clé pour rendre le catalogue dynamique. Nous avons développé un backend capable de "lire" le contenu de vos articles, et un frontend JavaScript pour les afficher.</p>
+            <h3>Le Rôle du PHP (backend/get_articles.php)</h3>
+            <ul>
+                <li><strong>API de données :</strong> Création de `get_articles.php` pour fournir les articles au format JSON.</li>
+                <li><strong>Extraction intelligente :</strong> Capacité à extraire automatiquement le titre, l'introduction et l'image depuis le fichier HTML de l'article.</li>
+                <li>**Nettoyage des chemins d'images :** Implémentation d'une logique dans PHP pour nettoyer les chemins d'images (`../images/` vers `images/`) afin qu'ils soient corrects pour les cartes affichées sur `articles.html`.</li>
+                <li><strong>Gestion multi-articles :</strong> Implémentation du scan du dossier `articles_html/` pour gérer un nombre illimité d'articles.</li>
+            </ul>
+            <h3>Le Rôle du JavaScript (articles.html)</h3>
+            <ul>
+                <li><strong>Génération dynamique des cartes :</strong> Affichage des articles sous forme de cartes élégantes et responsives.</li>
+                <li><strong>Communication asynchrone :</strong> Utilisation de `fetch` pour récupérer les données de l'API PHP.</li>
+                <li><strong>Navigation fluide :</strong> Création de liens fonctionnels vers les articles complets.</li>
+            </ul>
+        </section>
+
+        <section class="article-section">
+            <h2>Défis et Résolutions : La Maîtrise des Chemins et la Clarté des Fichiers</h2>
+            <p>Le déplacement des fichiers d'articles dans un dossier dédié a introduit des défis de chemins relatifs, mais chaque "crash" a été une opportunité d'apprendre et de solidifier le système.</p>
+            <h3>Principaux points résolus</h3>
+            <ul>
+                <li>**Correction des chemins des ressources internes :** Ajustement crucial des chemins (`../css/styles.css`, `../js/script.js`, `../images/image.png`, `../index.html`) dans les fichiers HTML d'articles eux-mêmes, pour garantir l'affichage correct des styles, scripts et images quand l'article est consulté directement.</li>
+                <li>**Indépendance des images :** Remplacement de Picsum par l'intégration d'images locales, garantissant cohérence et contrôle.</li>
+                <li>**Logique PHP raffinée :** Confirmation de la correction du script PHP pour qu'il fournisse des URL d'images toujours valides pour les cartes, indépendamment de la profondeur des fichiers d'articles.</li>
+                <li>**Optimisation des noms de fichiers d'articles :** Renommage des fichiers d'articles (ex: `exemple-article2.html` vers `feuille-de-route-ce-qu-il-reste-a-accomplir.html`) pour des URL plus propres, descriptives et SEO-friendly, reflétant le contenu de l'article.</li>
+            </ul>
+        </section>
+
+        <section class="article-section">
+            <h2>Le Point Nemo Actuel</h2>
+            <p>À ce jour, le système est stable et fonctionnel. Il gère dynamiquement les articles stockés dans `articles_html/`, avec des noms de fichiers clairs et une gestion robuste des chemins.</p>
+            <p>Ceci marque une étape importante dans la construction d'une plateforme de contenu flexible et autonome.</p>
+        </section>
+
+        <section class="article-section">
+            <h2>Visions Futures et Autonomie du Projet</h2>
+            <p>Au-delà des prochaines étapes fonctionnelles (comme la dynamisation des dates ou les catégories), une vision à plus long terme explore la possibilité de rendre le projet entièrement autonome. L'idée serait de concevoir un système où le dossier `catalogue/` contiendrait son propre environnement serveur minimal, permettant au site de fonctionner directement depuis une clé USB, sans installation préalable de XAMPP sur la machine hôte.</p>
+            <p>Ceci représenterait un saut technologique significatif vers une portabilité et une facilité de déploiement maximales.</p>
+        </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Christophe MILLOT. Tous droits réservés.</p>
+            <ul class="footer-links">
+                <li><a href="#">Mentions Légales</a></li>
+                <li><a href="#">Politique de Confidentialité</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="../js/script.js" defer></script>
+</body>
+</html>

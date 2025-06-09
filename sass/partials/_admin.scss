@@ -1,0 +1,124 @@
+// _admin.scss
+
+.articles-admin-list-section {
+    margin-top: 30px; /* Espacement par rapport à la section du formulaire */
+}
+
+.table-responsive {
+    width: 100%; /* Prend toute la largeur disponible de son parent */
+    overflow-x: auto; /* PERMET LE DÉFILEMENT HORIZONTAL SI LE CONTENU DÉPASSE */
+    -webkit-overflow-scrolling: touch; /* Améliore le défilement sur iOS */
+    border-radius: 8px; /* Bords légèrement arrondis pour le conteneur du tableau */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Légère ombre pour le conteneur */
+    margin-bottom: 20px; /* Espace en dessous du tableau */
+}
+
+.articles-table {
+    width: 100%; /* Le tableau prend 100% de la largeur de son conteneur réactif */
+    border-collapse: collapse; /* Supprime l'espacement entre les cellules */
+    min-width: 900px; /* Assure une largeur minimale pour mieux répartir les colonnes */
+}
+
+.articles-table th,
+.articles-table td {
+    padding: 15px 20px; /* AUGMENTATION DU PADDING INTERNE POUR UNE MEILLEURE LISIBILITÉ */
+    text-align: left; /* Alignement par défaut du texte à gauche */
+    border-bottom: 1px solid #ddd; /* Ligne fine entre les lignes */
+    vertical-align: middle; /* Aligne le contenu au milieu verticalement */
+}
+
+.articles-table th {
+    background-color: #e2e6ea; /* Couleur de fond pour les en-têtes */
+    color: #333; /* Couleur du texte des en-têtes */
+    font-weight: bold; /* Texte en gras */
+    text-transform: uppercase; /* En majuscules pour les en-têtes */
+    white-space: nowrap; /* Empêche les titres de colonne de passer à la ligne */
+}
+
+/* Styles spécifiques aux colonnes pour contrôler la largeur et le contenu */
+.articles-table td:nth-child(1) { /* ID */
+    width: 50px;
+    text-align: center;
+    white-space: nowrap;
+}
+.articles-table td:nth-child(2) { /* Titre */
+    width: 180px;
+    max-width: 180px; /* Limite la largeur du titre */
+    overflow: hidden; /* Cache le texte qui dépasse */
+    text-overflow: ellipsis; /* Ajoute "..." si le texte est tronqué */
+    white-space: nowrap; /* Maintient le texte sur une ligne */
+}
+.articles-table td:nth-child(3) { /* Image */
+    width: 80px;
+    text-align: center;
+}
+.articles-table td:nth-child(4) { /* Date */
+    width: 120px;
+    white-space: nowrap; /* Empêche la date de passer à la ligne */
+}
+.articles-table td:nth-child(5) { /* Résumé */
+    width: 250px;
+    max-width: 250px; /* Limite la largeur du résumé */
+    overflow: hidden; /* Cache le texte qui dépasse */
+    text-overflow: ellipsis; /* Ajoute "..." */
+    display: -webkit-box; /* Garder pour la compatibilité avec les navigateurs WebKit plus anciens qui pourraient en avoir besoin pour la troncature */
+    -webkit-box-orient: vertical; /* Garder pour la compatibilité avec les navigateurs WebKit plus anciens */
+    white-space: normal; /* Permet le retour à la ligne si besoin avant troncature */
+    
+    // Remplacer -webkit-line-clamp: 2; par la propriété standardisée :
+    line-clamp: 2; /* Limite à 2 lignes (version standard) */
+}
+.articles-table td:nth-child(6) { /* Actions */
+    width: 150px;
+    white-space: nowrap; /* Empêche les boutons de passer à la ligne */
+    text-align: center;
+}
+
+
+.articles-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Bandes alternées pour les lignes paires */
+}
+
+.articles-table tbody tr:hover {
+    background-color: #eef; /* Effet au survol des lignes */
+}
+
+.articles-table img {
+    width: 60px; /* Largeur fixe pour les images */
+    height: 45px; /* Hauteur fixe pour les images */
+    object-fit: cover; /* Assure que l'image couvre l'espace sans déformation */
+    border-radius: 4px; /* Bords légèrement arrondis pour les images */
+}
+
+.articles-table .actions-cell {
+    white-space: nowrap; /* Empêche les boutons de passer à la ligne */
+    text-align: center; /* Centre les boutons dans la cellule */
+}
+
+.articles-table .actions-cell .btn {
+    display: inline-block; /* Assure que les boutons sont des blocs en ligne */
+    margin: 0 3px; /* Espacement entre les boutons */
+    padding: 6px 10px; /* Remplissage des boutons */
+    font-size: 0.8em; /* Taille de police légèrement plus petite */
+    border-radius: 5px; /* Bords arrondis pour les boutons */
+    text-decoration: none; /* Supprime le soulignement des liens */
+    color: white; /* Couleur du texte des boutons */
+    transition: background-color 0.3s ease;
+    line-height: 1; /* Fixe la hauteur de ligne pour un meilleur alignement */
+}
+
+.articles-table .actions-cell .btn-edit {
+    background-color: #007bff; /* Couleur bleue pour le bouton Modifier */
+}
+
+.articles-table .actions-cell .btn-delete {
+    background-color: #dc3545; /* Couleur rouge pour le bouton Supprimer */
+}
+
+.articles-table .actions-cell .btn-edit:hover {
+    background-color: #0056b3;
+}
+
+.articles-table .actions-cell .btn-delete:hover {
+    background-color: #bd2130;
+}
