@@ -8,22 +8,36 @@ header('Access-Control-Allow-Origin: *');
 // Initialisation de la réponse JSON avec un état d'échec par défaut
 $response = ['success' => false, 'message' => ''];
 
-// Informations de connexion à la base de données
-// Assurez-vous que ces informations correspondent à votre configuration XAMPP
-$servername = "localhost";
-$username = "root"; // Nom d'utilisateur par défaut de XAMPP
-$password = "";     // Mot de passe par défaut de XAMPP (vide)
-$dbname = "articles_db"; // Nom de votre base de données
+// --- DÉBUT DE LA GESTION DE LA CONFIGURATION DE LA BASE DE DONNÉES ---
+// Détermination de l'environnement (local ou production)
+$config_file = 'db_config.local.php'; // Par défaut, environnement local
+
+// Vérifie si l'hôte du serveur n'est PAS 'localhost' ou '127.0.0.1' (environnements locaux)
+if (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] !== 'localhost' && $_SERVER['SERVER_NAME'] !== '127.0.0.1') {
+    $config_file = 'db_config.prod.php'; // Si ce n'est pas local, c'est la production
+}
+
+// Inclut le fichier de configuration approprié
+require_once __DIR__ . '/' . $config_file;
+
+// Connexion PDO à la base de données
+try {
+    $pdo = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // Configure PDO pour lancer des exceptions en cas d'erreur
+} catch (PDOException $e) {
+    // En cas d'erreur de connexion à la base de données, retourne une erreur JSON
+    $response['message'] = "Erreur de connexion à la base de données : " . $e->getMessage();
+    echo json_encode($response);
+    exit(); // Arrête l'exécution du script
+}
+// --- FIN DE LA GESTION DE LA CONFIGURATION DE LA BASE DE DONNÉES ---
+
 
 try {
-    // Crée une nouvelle connexion PDO à la base de données
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password);
-    // Définit le mode d'erreur PDO à Exception, ce qui permet de capturer les erreurs avec try/catch
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
     // Requête SQL pour sélectionner tous les articles depuis la table 'articles'
-    // Ordonné par 'created_at' (le plus récent en premier) ou 'id' si vous préférez
-    $stmt = $conn->prepare("SELECT id, titre, image_url, date_publication, resume, contenu_complet FROM articles ORDER BY created_at DESC");
+    // Inclus maintenant 'contenu_complet' et 'created_at' si non déjà inclus
+    // Ordonné par 'created_at' (le plus récent en premier)
+    $stmt = $pdo->prepare("SELECT id, titre, image_url, date_publication, resume, contenu_complet, created_at FROM articles ORDER BY created_at DESC");
     $stmt->execute();
 
     // Récupère tous les résultats sous forme de tableau associatif
@@ -42,10 +56,9 @@ try {
     }
 
 } catch (PDOException $e) {
-    // En cas d'erreur de connexion ou de requête SQL
-    $response['message'] = 'Erreur de base de données : ' . $e->getMessage();
-    // Log l'erreur pour le débogage (ne pas afficher en production pour des raisons de sécurité)
-    error_log('Erreur dans get_articles.php : ' . $e->getMessage());
+    // En cas d'erreur de requête SQL
+    $response['message'] = 'Erreur de base de données lors de la récupération des articles : ' . $e->getMessage();
+    error_log('Erreur dans get_articles.php : ' . $e->getMessage()); // Log l'erreur pour le débogage
 }
 
 // Encode la réponse PHP en format JSON et l'affiche

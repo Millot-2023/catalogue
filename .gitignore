@@ -1,5 +1,7 @@
 # Ignorer les fichiers de configuration spécifiques à l'environnement local
-config.local.php
+backend/db_config.local.php # AJOUT / CORRECTION : Ignore le fichier de configuration de votre XAMPP
+# Ligne existante, bien de garder si vous avez un fichier prod.php
+backend/db_config.prod.php 
 
 # Ignorer les dépendances PHP (si vous utilisez Composer plus tard)
 /vendor/

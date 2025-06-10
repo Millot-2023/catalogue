@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Ajout d'un écouteur sur le redimensionnement pour gérer les transitions
         // Si l'écran passe du mobile au desktop, le menu doit se fermer
         window.addEventListener('resize', function() {
-            if (window.innerWidth > BREAKPOINT_DESKTOP) {
+            if (window.innerWidth > BREAKPOINT_DESKTOP) { // LIGNE 39 : CORRECTION DE LA FAUTE DE FRAPPE ICI
                 if (navMenu.classList.contains('active')) {
                     navToggle.classList.remove('active');
                     navMenu.classList.remove('active');
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Début du code de gestion des articles ---
     const articleForm = document.getElementById('articleForm');
-    const messageArea = document.getElementById('messageArea');
+    const messageArea = document.getElementById('messageArea'); // Pour admin-articles.html
 
     console.log("Articles : Éléments du formulaire d'article récupérés."); // TRACE 6
 
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 contenuComplet: document.getElementById('contenuComplet').value
             };
 
-            const apiUrl = 'http://localhost/catalogue/backend/add_article.php';
+            const apiUrl = 'https://utm8561.webmo.fr/backend/add_article.php';
 
             try {
                 console.log("Articles : Tentative d'envoi de l'article à l'API."); // TRACE 9
@@ -105,22 +105,40 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    const articlesTableBody = document.getElementById('articlesTableBody');
-    const listMessageArea = document.getElementById('listMessageArea');
+    const articlesTableBody = document.getElementById('articlesTableBody'); // Pour admin-articles.html
+    const listMessageArea = document.getElementById('listMessageArea'); // Pour admin-articles.html
 
     console.log("Articles : Éléments de la liste d'articles récupérés."); // TRACE 12
 
-    const fetchArticlesApiUrl = 'http://localhost/catalogue/backend/get_articles.php';
-    const deleteArticleApiUrl = 'http://localhost/catalogue/backend/delete_article.php';
+    const fetchArticlesApiUrl = 'https://utm8561.webmo.fr/backend/get_articles.php';
+    const deleteArticleApiUrl = 'https://utm8561.webmo.fr/backend/delete_article.php';
 
     async function fetchArticles() {
         console.log("fetchArticles() : Fonction appelée."); // TRACE 13
-        if (listMessageArea) {
-            listMessageArea.textContent = 'Chargement des articles...';
-            listMessageArea.style.color = '#888';
+        // Cette section a été réorganisée pour être compatible avec les deux pages (articles.html et admin-articles.html)
+        let targetContainer;
+        let targetMessageArea;
+
+        // Détecte si on est sur la page articles.html ou admin-articles.html
+        if (document.getElementById('articles-container')) { // Si l'élément de la page publique existe
+            targetContainer = document.getElementById('articles-container');
+            targetMessageArea = document.getElementById('message-area'); // Zone de message pour articles.html
+        } else { // Sinon, on est sur la page d'administration
+            targetContainer = articlesTableBody;
+            targetMessageArea = listMessageArea; // Zone de message pour admin-articles.html
         }
-        if (articlesTableBody) {
-            articlesTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Chargement des articles...</td></tr>';
+
+        if (targetMessageArea) {
+            targetMessageArea.textContent = 'Chargement des articles...';
+            targetMessageArea.style.color = '#888';
+        }
+        if (targetContainer) {
+            // Pour articles.html, on remplace le contenu du div, pour admin-articles.html, on remplace le tbody
+            if (targetContainer.id === 'articles-container') {
+                targetContainer.innerHTML = '<p style="text-align: center;">Chargement des articles...</p>';
+            } else {
+                targetContainer.innerHTML = '<tr><td colspan="6" style="text-align: center;">Chargement des articles...</td></tr>';
+            }
         }
 
         try {
@@ -133,64 +151,107 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("fetchArticles() : Données reçues de l'API :", data); // TRACE 15
 
             if (data.success && data.articles) {
-                displayArticles(data.articles);
-                if (listMessageArea) listMessageArea.textContent = '';
+                // Appel de displayArticles en passant le container et la zone de message appropriés
+                displayArticles(data.articles, targetContainer, targetMessageArea);
+                if (targetMessageArea) targetMessageArea.textContent = '';
                 console.log("fetchArticles() : Articles affichés avec succès."); // TRACE 16
             } else {
-                if (listMessageArea) {
-                    listMessageArea.textContent = "Erreur lors du chargement des articles : " + (data.message || "Aucun article trouvé.");
-                    listMessageArea.style.color = 'red';
+                const message = data.message || "Aucun article trouvé.";
+                if (targetMessageArea) {
+                    targetMessageArea.textContent = "Erreur lors du chargement des articles : " + message;
+                    targetMessageArea.style.color = 'red';
                 }
-                if (articlesTableBody) {
-                    articlesTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">' + (data.message || "Aucun article trouvé.") + '</td></tr>';
+                if (targetContainer) {
+                    if (targetContainer.id === 'articles-container') {
+                        targetContainer.innerHTML = '<p style="text-align: center;">' + message + '</p>';
+                    } else {
+                        targetContainer.innerHTML = '<tr><td colspan="6" style="text-align: center;">' + message + '</td></tr>';
+                    }
                 }
                 console.warn("fetchArticles() : La réponse de l'API n'indique pas le succès ou ne contient pas d'articles.", data); // TRACE WARN API
             }
 
         } catch (error) {
-            if (listMessageArea) {
-                listMessageArea.textContent = "Impossible de charger les articles. Erreur: " + error.message;
-                listMessageArea.style.color = 'red';
+            const errorMessage = "Impossible de charger les articles. Erreur: " + error.message;
+            if (targetMessageArea) {
+                targetMessageArea.textContent = errorMessage;
+                targetMessageArea.style.color = 'red';
             }
-            if (articlesTableBody) {
-                articlesTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Erreur de chargement.</td></tr>';
+            if (targetContainer) {
+                if (targetContainer.id === 'articles-container') {
+                    targetContainer.innerHTML = '<p style="text-align: center;">Erreur lors du chargement des articles.</p>';
+                } else {
+                    targetContainer.innerHTML = '<tr><td colspan="6" style="text-align: center;">Erreur de chargement.</td></tr>';
+                }
             }
             console.error("Erreur de récupération des articles:", error); // TRACE ERROR FETCH
         }
     }
 
-    function displayArticles(articles) {
+    // MODIFICATION DE LA SIGNATURE : Ajout de targetContainer et targetMessageArea
+    function displayArticles(articles, targetContainer, targetMessageArea) {
         console.log("displayArticles() : Fonction appelée avec", articles.length, "articles."); // TRACE 17
-        if (articlesTableBody) {
-            articlesTableBody.innerHTML = '';
+        if (targetContainer) {
+            targetContainer.innerHTML = ''; // Vide le contenu actuel
             if (articles.length === 0) {
-                articlesTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Aucun article à afficher.</td></tr>';
+                const noArticlesMessage = '<p style="text-align: center;">Aucun article à afficher pour le moment.</p>';
+                if (targetContainer.id === 'articles-container') {
+                    targetContainer.innerHTML = noArticlesMessage;
+                } else {
+                    targetContainer.innerHTML = '<tr><td colspan="6" style="text-align: center;">Aucun article à afficher.</td></tr>';
+                }
                 return;
             }
 
             articles.forEach(article => {
-                const row = articlesTableBody.insertRow();
-                row.innerHTML = `
-                    <td>${article.id}</td>
-                    <td>${article.titre}</td>
-                    <td><img src="${article.image_url}" alt="Image" style="width: 50px; height: auto;"></td>
-                    <td>${article.date_publication}</td>
-                    <td>${article.resume.substring(0, 70)}...</td>
-                    <td class="actions-cell">
-                        <a href="edit-article.html?id=${article.id}" class="btn btn-edit">Modifier</a>
-                        <button class="btn btn-delete" data-id="${article.id}">Supprimer</button>
-                    </td>
-                `;
+                if (targetContainer.id === 'articles-container') {
+                    // Logique pour articles.html (affichage en cards)
+                    const articleCard = document.createElement('article');
+                    articleCard.classList.add('article-card');
+
+                    articleCard.innerHTML = `
+                        <div class="article-image-container">
+                            <img src="${article.image_url}" alt="Image de l'article : ${article.titre}">
+                        </div>
+                        <div class="card-content">
+                            <h3>${article.titre}</h3>
+                            <p class="article-date">Publié le: ${article.date_publication}</p>
+                            <p>${article.resume}</p>
+                            <div class="card-button-wrapper">
+                                <a href="article-details.html?id=${article.id}" class="read-more-btn">Lire la suite</a>
+                            </div>
+                        </div>
+                    `;
+                    targetContainer.appendChild(articleCard);
+
+                } else {
+                    // Logique pour admin-articles.html (affichage en tableau)
+                    const row = targetContainer.insertRow();
+                    row.innerHTML = `
+                        <td>${article.id}</td>
+                        <td>${article.titre}</td>
+                        <td><img src="${article.image_url}" alt="Image" style="width: 50px; height: auto;"></td>
+                        <td>${article.date_publication}</td>
+                        <td>${article.resume.substring(0, 70)}...</td>
+                        <td class="actions-cell">
+                            <a href="edit-article.html?id=${article.id}" class="btn btn-edit">Modifier</a>
+                            <button class="btn btn-delete" data-id="${article.id}">Supprimer</button>
+                        </td>
+                    `;
+                }
             });
 
-            document.querySelectorAll('.btn-delete').forEach(button => {
-                button.addEventListener('click', async (event) => {
-                    const articleId = event.target.dataset.id;
-                    if (confirm(`Êtes-vous sûr de vouloir supprimer l'article ID: ${articleId} ? Cette action est irréversible.`)) {
-                        await deleteArticle(articleId);
-                    }
+            // Ajout des écouteurs de suppression uniquement pour admin-articles.html
+            if (targetContainer.id !== 'articles-container') {
+                document.querySelectorAll('.btn-delete').forEach(button => {
+                    button.addEventListener('click', async (event) => {
+                        const articleId = event.target.dataset.id;
+                        if (confirm(`Êtes-vous sûr de vouloir supprimer l'article ID: ${articleId} ? Cette action est irréversible.`)) {
+                            await deleteArticle(articleId);
+                        }
+                    });
                 });
-            });
+            }
         }
     }
 
