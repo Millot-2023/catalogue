@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Fin du code existant pour la navigation ---
 
 
-    // --- Début du code de gestion des articles ---
+    // --- Début du code de gestion des articles (ajout, suppression, listage) ---
     const articleForm = document.getElementById('articleForm');
     const messageArea = document.getElementById('messageArea'); // Pour admin-articles.html
 
@@ -287,8 +287,68 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // L'appel initial à fetchArticles() DOIT être DANS le DOMContentLoaded
-    console.log("DOMContentLoaded : Appel initial de fetchArticles()."); // TRACE 20
-    fetchArticles();
-    // --- Fin du code de gestion des articles ---
+    // Il doit être conditionnel pour ne s'exécuter que sur les pages concernées
+    if (document.getElementById('articles-container') || document.getElementById('articlesTableBody')) {
+        console.log("DOMContentLoaded : Appel initial de fetchArticles()."); // TRACE 20
+        fetchArticles();
+    }
+
+
+    // --- Code pour article-details.html ---
+    // Vérifie si nous sommes sur la page article-details.html
+    if (window.location.pathname.includes('article-details.html')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleId = urlParams.get('id');
+
+        if (articleId) {
+            console.log('ID de l\'article à afficher :', articleId);
+            // Appel de la fonction pour charger les détails de cet article
+            getArticleDetails(articleId);
+        } else {
+            console.log('Aucun ID d\'article trouvé dans l\'URL.');
+            document.getElementById('article-detail-content').innerHTML = '<p>Article non spécifié.</p>';
+        }
+    }
+
+    // Fonction pour charger les détails d'un article spécifique (à implémenter)
+    function getArticleDetails(id) {
+        // Sélectionne l'élément où le contenu de l'article sera affiché
+        const articleContentDiv = document.getElementById('article-detail-content');
+        if (!articleContentDiv) {
+            console.error('L\'élément #article-detail-content est introuvable.');
+            return;
+        }
+
+        articleContentDiv.innerHTML = '<p>Chargement des détails de l\'article...</p>'; // Message de chargement
+
+        fetch(`backend/get_article_by_id.php?id=${id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(article => {
+                if (article && article.id_article) { // Vérifie si l'article est trouvé
+                    articleContentDiv.innerHTML = `
+                        <h2>${article.titre}</h2>
+                        <img src="${article.image_url}" alt="Image de l'article : ${article.titre}" style="max-width: 100%; height: auto; margin-bottom: 20px;">
+                        <p><strong>Résumé :</strong> ${article.resume}</p>
+                        <div>
+                            <h3>Contenu Complet :</h3>
+                            <p>${article.contenuComplet}</p>
+                        </div>
+                        <p>Catégorie : ${article.categorie}</p>
+                        <p>Date de publication : ${article.date_publication}</p>
+                    `;
+                } else {
+                    articleContentDiv.innerHTML = '<p>Article non trouvé.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des détails de l\'article :', error);
+                articleContentDiv.innerHTML = `<p>Impossible de charger les détails de l'article. Erreur: ${error.message}</p>`;
+            });
+    }
 
 }); // Fin de document.addEventListener('DOMContentLoaded'

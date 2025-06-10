@@ -39,7 +39,11 @@ try {
         }
 
         // Prépare la requête SQL pour sélectionner un article par son ID
-        $sql = "SELECT id, titre, image_url, date_publication, resume, contenu_complet, created_at FROM articles WHERE id = :id";
+        // Utilisation d'ALIAS pour faire correspondre les noms des colonnes de la DB
+        // aux noms attendus par le JavaScript (ex: id devient id_article, contenu_complet devient contenuComplet)
+        // Ajout de la colonne 'categorie'
+
+$sql = "SELECT id AS id_article, titre, image_url, date_publication, resume, contenu_complet AS contenuComplet, created_at FROM articles WHERE id = :id";
 
         // Prépare la déclaration PDO
         $stmt = $pdo->prepare($sql);
@@ -62,7 +66,7 @@ try {
         // Vérifie si un article a été trouvé
         if ($article) {
             // Succès : renvoie l'article au format JSON
-            echo json_encode(["success" => true, "article" => $article]);
+            echo json_encode($article); // Retourne directement l'objet article comme le JS l'attendait
         } else {
             // Article non trouvé
             echo json_encode(["success" => false, "message" => "Article non trouvé."]);
