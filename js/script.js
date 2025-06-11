@@ -1,5 +1,3 @@
-// script.js
-
 // Attendre que le DOM soit entièrement chargé avant d'exécuter le script
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOMContentLoaded : Le DOM est entièrement chargé."); // TRACE 1
@@ -36,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Ajout d'un écouteur sur le redimensionnement pour gérer les transitions
         // Si l'écran passe du mobile au desktop, le menu doit se fermer
         window.addEventListener('resize', function() {
-            if (window.innerWidth > BREAKPOINT_DESKTOP) { // LIGNE 39 : CORRECTION DE LA FAUTE DE FRAPPE ICI
+            if (window.innerWidth > BREAKPOINT_DESKTOP) {
                 if (navMenu.classList.contains('active')) {
                     navToggle.classList.remove('active');
                     navMenu.classList.remove('active');
@@ -104,7 +102,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-
     const articlesTableBody = document.getElementById('articlesTableBody'); // Pour admin-articles.html
     const listMessageArea = document.getElementById('listMessageArea'); // Pour admin-articles.html
 
@@ -112,6 +109,81 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const fetchArticlesApiUrl = 'https://utm8561.webmo.fr/backend/get_articles.php';
     const deleteArticleApiUrl = 'https://utm8561.webmo.fr/backend/delete_article.php';
+
+    // --- DÉBUT DE LA FONCTION getArticleDetails DÉPLACÉE ET MODIFIÉE ---
+    // Fonction pour charger les détails d'un article spécifique
+    function getArticleDetails(id) {
+        // AJOUT DE LA TRACE DE DÉBUG DÈS LE DÉBUT DE LA FONCTION
+        console.log("getArticleDetails() : Tentative de récupération pour l'ID:", id);
+
+        const articleContentDiv = document.getElementById('article-detail-content');
+        if (!articleContentDiv) {
+            console.error('L\'élément #article-detail-content est introuvable.');
+            return;
+        }
+
+        articleContentDiv.innerHTML = '<p>Chargement des détails de l\'article...</p>'; // Message de chargement
+
+        // Assurez-vous que le chemin vers votre backend est correct (relatif ou absolu)
+        fetch(`backend/get_article_by_id.php?id=${id}`)
+            .then(response => {
+                // AJOUT DE LA TRACE POUR VOIR LA RÉPONSE HTTP BRUTE
+                console.log("getArticleDetails() : Réponse HTTP reçue, statut:", response.status);
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(article => {
+                // AJOUT DE LA TRACE POUR VOIR L'OBJET ARTICLE REÇU
+                console.log("getArticleDetails() : Données de l'article reçues :", article);
+
+                // IMPORTANT : S'assurer que les clés de l'objet 'article' correspondent EXACTEMENT aux clés renvoyées par votre PHP.
+                // D'après votre console, vous avez : id_article, titre, image_url, date_publication, resume, contenuComplet.
+                if (article && article.id_article) { // Vérifie si l'article est trouvé et a la propriété id_article
+                    // Mise à jour du titre principal de la page si un élément avec l'ID 'article-title-display' existe
+                    const pageTitleElement = document.getElementById('article-title-display');
+                    if (pageTitleElement) {
+                        pageTitleElement.textContent = article.titre || 'Titre non disponible';
+                    }
+
+                    // Utilisation de `article.contenuComplet` comme indiqué par votre console log
+                    // Ajout de fallback pour les valeurs qui pourraient être undefined
+                    const contenuCompletAffiche = article.contenuComplet || 'Contenu complet non disponible.';
+                    const categorieAffiche = article.categorie || 'Non spécifiée'; // `categorie` n'apparaissait pas dans votre console log, donc ajout d'un fallback solide.
+                    const datePublicationAffiche = article.date_publication || 'Date non spécifiée';
+
+
+                    articleContentDiv.innerHTML = `
+                        <h2>${article.titre || 'Titre non disponible'}</h2>
+                        <img src="${article.image_url || 'placeholder.jpg'}" alt="Image de l'article : ${article.titre || 'Non disponible'}" style="max-width: 100%; height: auto; margin-bottom: 20px;">
+                        <p><strong>Résumé :</strong> ${article.resume || 'Résumé non disponible'}</p>
+                        <div>
+                            <h3>Contenu Complet :</h3>
+                            <p>${contenuCompletAffiche}</p>
+                        </div>
+                        <p>Catégorie : ${categorieAffiche}</p>
+                        <p>Date de publication : ${datePublicationAffiche}</p>
+                    `;
+                } else {
+                    const pageTitleElement = document.getElementById('article-title-display');
+                    if (pageTitleElement) {
+                        pageTitleElement.textContent = 'Article non trouvé';
+                    }
+                    articleContentDiv.innerHTML = '<p>Article non trouvé.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des détails de l\'article :', error);
+                const pageTitleElement = document.getElementById('article-title-display');
+                if (pageTitleElement) {
+                    pageTitleElement.textContent = 'Erreur de chargement';
+                }
+                articleContentDiv.innerHTML = `<p>Impossible de charger les détails de l'article. Erreur: ${error.message}</p>`;
+            });
+    }
+    // --- FIN DE LA FONCTION getArticleDetails DÉPLACÉE ET MODIFIÉE ---
+
 
     async function fetchArticles() {
         console.log("fetchArticles() : Fonction appelée."); // TRACE 13
@@ -209,6 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const articleCard = document.createElement('article');
                     articleCard.classList.add('article-card');
 
+                    // Notez l'utilisation de `article.id_article` si votre get_articles.php renvoie `id_article` et non `id`
                     articleCard.innerHTML = `
                         <div class="article-image-container">
                             <img src="${article.image_url}" alt="Image de l'article : ${article.titre}">
@@ -218,24 +291,27 @@ document.addEventListener('DOMContentLoaded', function() {
                             <p class="article-date">Publié le: ${article.date_publication}</p>
                             <p>${article.resume}</p>
                             <div class="card-button-wrapper">
-                                <a href="article-details.html?id=${article.id}" class="read-more-btn">Lire la suite</a>
+                                <a href="article-details.html?id=${article.id_article || article.id}" class="read-more-btn">Lire la suite</a>
                             </div>
                         </div>
                     `;
+                    // --- AJOUT DE LA LIGNE DE DÉBOGAGE ICI ---
+                    console.log("GENERATION DU LIEN - ID:", (article.id_article || article.id), "TITRE:", article.titre);
+                    // -----------------------------------------
                     targetContainer.appendChild(articleCard);
 
                 } else {
                     // Logique pour admin-articles.html (affichage en tableau)
                     const row = targetContainer.insertRow();
                     row.innerHTML = `
-                        <td>${article.id}</td>
+                        <td>${article.id_article || article.id}</td>
                         <td>${article.titre}</td>
                         <td><img src="${article.image_url}" alt="Image" style="width: 50px; height: auto;"></td>
                         <td>${article.date_publication}</td>
                         <td>${article.resume.substring(0, 70)}...</td>
                         <td class="actions-cell">
-                            <a href="edit-article.html?id=${article.id}" class="btn btn-edit">Modifier</a>
-                            <button class="btn btn-delete" data-id="${article.id}">Supprimer</button>
+                            <a href="edit-article.html?id=${article.id_article || article.id}" class="btn btn-edit">Modifier</a>
+                            <button class="btn btn-delete" data-id="${article.id_article || article.id}">Supprimer</button>
                         </td>
                     `;
                 }
@@ -293,7 +369,6 @@ document.addEventListener('DOMContentLoaded', function() {
         fetchArticles();
     }
 
-
     // --- Code pour article-details.html ---
     // Vérifie si nous sommes sur la page article-details.html
     if (window.location.pathname.includes('article-details.html')) {
@@ -302,6 +377,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (articleId) {
             console.log('ID de l\'article à afficher :', articleId);
+            // AJOUT DE LA TRACE APRÈS L'APPEL POUR CONFIRMER L'EXÉCUTION
+            console.log("Appel de getArticleDetails effectué pour l'ID:", articleId);
             // Appel de la fonction pour charger les détails de cet article
             getArticleDetails(articleId);
         } else {
@@ -310,45 +387,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Fonction pour charger les détails d'un article spécifique (à implémenter)
-    function getArticleDetails(id) {
-        // Sélectionne l'élément où le contenu de l'article sera affiché
-        const articleContentDiv = document.getElementById('article-detail-content');
-        if (!articleContentDiv) {
-            console.error('L\'élément #article-detail-content est introuvable.');
-            return;
-        }
-
-        articleContentDiv.innerHTML = '<p>Chargement des détails de l\'article...</p>'; // Message de chargement
-
-        fetch(`backend/get_article_by_id.php?id=${id}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Erreur HTTP: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(article => {
-                if (article && article.id_article) { // Vérifie si l'article est trouvé
-                    articleContentDiv.innerHTML = `
-                        <h2>${article.titre}</h2>
-                        <img src="${article.image_url}" alt="Image de l'article : ${article.titre}" style="max-width: 100%; height: auto; margin-bottom: 20px;">
-                        <p><strong>Résumé :</strong> ${article.resume}</p>
-                        <div>
-                            <h3>Contenu Complet :</h3>
-                            <p>${article.contenuComplet}</p>
-                        </div>
-                        <p>Catégorie : ${article.categorie}</p>
-                        <p>Date de publication : ${article.date_publication}</p>
-                    `;
-                } else {
-                    articleContentDiv.innerHTML = '<p>Article non trouvé.</p>';
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors du chargement des détails de l\'article :', error);
-                articleContentDiv.innerHTML = `<p>Impossible de charger les détails de l'article. Erreur: ${error.message}</p>`;
-            });
-    }
-
+    // Ligne de débogage pour s'assurer que le script est bien la dernière version chargée
+    console.log("SCRIPT.JS VERSION FINALE : " + new Date().toLocaleString());
 }); // Fin de document.addEventListener('DOMContentLoaded'
