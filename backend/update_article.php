@@ -53,34 +53,40 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 }
 
 // Assurez-vous que les clés existent et nettoyez/validez les données
+// Les clés ici DOIVENT correspondre aux clés envoyées par JavaScript (camelCase)
 $id = filter_var($data['id'] ?? null, FILTER_SANITIZE_NUMBER_INT);
-// Note : htmlspecialchars est appliqué ici pour la sécurité XSS au cas où ces valeurs seraient réaffichées directement.
-// Les requêtes préparées de PDO protègent déjà contre les injections SQL.
 $titre = htmlspecialchars($data['titre'] ?? '', ENT_QUOTES, 'UTF-8');
-$image_url = filter_var($data['image_url'] ?? '', FILTER_SANITIZE_URL);
-$date_publication = $data['date_publication'] ?? ''; // La date devrait être au format YYYY-MM-DD
+$imageUrl = filter_var($data['imageUrl'] ?? '', FILTER_SANITIZE_URL);
+$datePublication = $data['datePublication'] ?? '';
 $resume = htmlspecialchars($data['resume'] ?? '', ENT_QUOTES, 'UTF-8');
-$contenu_complet = htmlspecialchars($data['contenu_complet'] ?? '', ENT_QUOTES, 'UTF-8');
+$contenuComplet = htmlspecialchars($data['contenuComplet'] ?? '', ENT_QUOTES, 'UTF-8');
 
 // Validation basique des données obligatoires
-if (empty($id) || !is_numeric($id) || $id <= 0 || empty($titre) || empty($date_publication)) {
+if (empty($id) || !is_numeric($id) || $id <= 0 || empty($titre) || empty($datePublication)) {
     echo json_encode(['success' => false, 'message' => 'ID, titre ou date de publication manquants ou invalides.']);
     exit();
 }
 
 try {
     // Préparer la requête SQL de mise à jour
-    // Utilisation de marqueurs nominatifs pour plus de clarté
-    $sql = "UPDATE articles SET titre = :titre, image_url = :image_url, date_publication = :date_publication, resume = :resume, contenu_complet = :contenu_complet WHERE id = :id";
+    // Les noms des colonnes ici DOIVENT correspondre EXACTEMENT à votre BDD (vus dans phpMyAdmin)
+    $sql = "UPDATE articles SET
+                titre = :titre,
+                image_url = :imageUrl,          -- Colonne BDD 'image_url' (vu dans phpMyAdmin), valeur variable 'imageUrl'
+                date_publication = :datePublication, -- Colonne BDD 'date_publication' (vu dans phpMyAdmin), valeur variable 'datePublication'
+                resume = :resume,
+                contenu_complet = :contenuComplet -- Colonne BDD 'contenu_complet' (vu dans phpMyAdmin), valeur variable 'contenuComplet'
+            WHERE id = :id"; // CORRIGÉ ICI : 'id_article' remplacé par 'id' (vu dans phpMyAdmin)
+
     $stmt = $pdo->prepare($sql);
 
     // Exécuter la requête avec les valeurs liées aux marqueurs nominatifs
     $stmt->execute([
         ':titre' => $titre,
-        ':image_url' => $image_url,
-        ':date_publication' => $date_publication,
+        ':imageUrl' => $imageUrl,
+        ':datePublication' => $datePublication,
         ':resume' => $resume,
-        ':contenu_complet' => $contenu_complet,
+        ':contenuComplet' => $contenuComplet,
         ':id' => $id
     ]);
 
@@ -96,5 +102,9 @@ try {
     // Capturer et renvoyer les erreurs de base de données en JSON
     error_log("Erreur PDO dans update_article.php: " . $e->getMessage()); // Enregistre l'erreur dans le log Apache
     echo json_encode(['success' => false, 'message' => 'Erreur de base de données lors de la mise à jour : ' . $e->getMessage()]);
+} catch (Exception $e) {
+    // Capture les autres exceptions inattendues
+    error_log("Erreur inattendue dans update_article.php: " . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Une erreur inattendue est survenue : ' . $e->getMessage()]);
 }
 ?>

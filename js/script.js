@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 contenuComplet: document.getElementById('contenuComplet').value
             };
 
-            // *** CORRECTION ICI : Utilisation d'un chemin relatif pour le développement local ***
             const apiUrl = 'backend/add_article.php';
 
             try {
@@ -108,98 +107,121 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log("Articles : Éléments de la liste d'articles récupérés."); // TRACE 12
 
-    // *** CORRECTION ICI : Utilisation de chemins relatifs pour le développement local ***
     const fetchArticlesApiUrl = 'backend/get_articles.php';
     const deleteArticleApiUrl = 'backend/delete_article.php';
 
-    // --- DÉBUT DE LA FONCTION getArticleDetails DÉPLACÉE ET MODIFIÉE ---
-    // Fonction pour charger les détails d'un article spécifique
-    function getArticleDetails(id) {
-        // AJOUT DE LA TRACE DE DÉBUG DÈS LE DÉBUT DE LA FONCTION
-        console.log("getArticleDetails() : Tentative de récupération pour l'ID:", id);
-
-        const articleContentDiv = document.getElementById('article-detail-content');
-        if (!articleContentDiv) {
-            console.error('L\'élément #article-detail-content est introuvable.');
+    // Nouvelle fonction pour pré-remplir le formulaire d'édition
+    function populateEditForm(article) {
+        if (!article || !article.id_article) {
+            console.error("populateEditForm: Article data is invalid or missing ID.");
             return;
         }
 
-        articleContentDiv.innerHTML = '<p>Chargement des détails de l\'article...</p>'; // Message de chargement
-
-        // *** CORRECTION ICI (si ce n'était pas déjà fait) : Utilisation d'un chemin relatif ***
-        fetch(`backend/get_article_by_id.php?id=${id}`)
-            .then(response => {
-                // AJOUT DE LA TRACE POUR VOIR LA RÉPONSE HTTP BRUTE
-                console.log("getArticleDetails() : Réponse HTTP reçue, statut:", response.status);
-                if (!response.ok) {
-                    throw new Error(`Erreur HTTP: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(article => {
-                // AJOUT DE LA TRACE POUR VOIR L'OBJET ARTICLE REÇU
-                console.log("getArticleDetails() : Données de l'article reçues :", article);
-
-                // IMPORTANT : S'assurer que les clés de l'objet 'article' correspondent EXACTEMENT aux clés renvoyées par votre PHP.
-                // D'après votre console, vous avez : id_article, titre, image_url, date_publication, resume, contenuComplet.
-                if (article && article.id_article) { // Vérifie si l'article est trouvé et a la propriété id_article
-                    // Mise à jour du titre principal de la page si un élément avec l'ID 'article-title-display' existe
-                    const pageTitleElement = document.getElementById('article-title-display');
-                    if (pageTitleElement) {
-                        pageTitleElement.textContent = article.titre || 'Titre non disponible';
-                    }
-
-                    // Utilisation de `article.contenuComplet` comme indiqué par votre console log
-                    // Ajout de fallback pour les valeurs qui pourraient être undefined
-                    const contenuCompletAffiche = article.contenuComplet || 'Contenu complet non disponible.';
-                    const categorieAffiche = article.categorie || 'Non spécifiée'; // `categorie` n'apparaissait pas dans votre console log, donc ajout d'un fallback solide.
-                    const datePublicationAffiche = article.date_publication || 'Date non spécifiée';
-
-
-                    articleContentDiv.innerHTML = `
-                        <h2>${article.titre || 'Titre non disponible'}</h2>
-                        <img src="${article.image_url || 'placeholder.jpg'}" alt="Image de l'article : ${article.titre || 'Non disponible'}" style="max-width: 100%; height: auto; margin-bottom: 20px;">
-                        <p><strong>Résumé :</strong> ${article.resume || 'Résumé non disponible'}</p>
-                        <div>
-                            <h3>Contenu Complet :</h3>
-                            <p>${contenuCompletAffiche}</p>
-                        </div>
-                        <p>Catégorie : ${categorieAffiche}</p>
-                        <p>Date de publication : ${datePublicationAffiche}</p>
-                    `;
-                } else {
-                    const pageTitleElement = document.getElementById('article-title-display');
-                    if (pageTitleElement) {
-                        pageTitleElement.textContent = 'Article non trouvé';
-                    }
-                    articleContentDiv.innerHTML = '<p>Article non trouvé.</p>';
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors du chargement des détails de l\'article :', error);
-                const pageTitleElement = document.getElementById('article-title-display');
-                if (pageTitleElement) {
-                    pageTitleElement.textContent = 'Erreur de chargement';
-                }
-                articleContentDiv.innerHTML = `<p>Impossible de charger les détails de l'article. Erreur: ${error.message}</p>`;
-            });
+        // Assurez-vous que ces ID correspondent aux ID de vos champs dans edit-article.html
+        document.getElementById('articleId').value = article.id_article || ''; // Champ caché pour l'ID
+        document.getElementById('titre').value = article.titre || '';
+        document.getElementById('imageUrl').value = article.image_url || '';
+        document.getElementById('datePublication').value = article.date_publication || '';
+        document.getElementById('resume').value = article.resume || '';
+        document.getElementById('contenuComplet').value = article.contenuComplet || '';
     }
-    // --- FIN DE LA FONCTION getArticleDetails DÉPLACÉE ET MODIFIÉE ---
+
+
+    // MODIFICATION DE LA SECTION DE DÉTAILS/ÉDITION POUR GÉRER LES DEUX PAGES
+    // --- Code pour article-details.html ET edit-article.html ---
+    // Vérifie si nous sommes sur la page article-details.html OU edit-article.html
+    if (window.location.pathname.includes('article-details.html') || window.location.pathname.includes('edit-article.html')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleId = urlParams.get('id');
+
+        if (articleId) {
+            console.log('ID de l\'article à afficher/modifier :', articleId);
+            // Fetch article details
+            fetch(`backend/get_article_by_id.php?id=${articleId}`)
+                .then(response => {
+                    console.log("Fetch pour détails/édition: Réponse HTTP reçue, statut:", response.status);
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(article => {
+                    console.log("Données de l'article reçues pour détails/édition :", article);
+                    if (article && article.id_article) {
+                        if (window.location.pathname.includes('article-details.html')) {
+                            // Logique existante pour l'affichage des détails sur article-details.html
+                            const articleContentDiv = document.getElementById('article-detail-content');
+                            if (articleContentDiv) {
+                                const pageTitleElement = document.getElementById('article-title-display');
+                                if (pageTitleElement) {
+                                    pageTitleElement.textContent = article.titre || 'Titre non disponible';
+                                }
+                                const contenuCompletAffiche = article.contenuComplet || 'Contenu complet non disponible.';
+                                const categorieAffiche = article.categorie || 'Non spécifiée';
+                                const datePublicationAffiche = article.date_publication || 'Date non spécifiée';
+
+                                articleContentDiv.innerHTML = `
+                                    <h2>${article.titre || 'Titre non disponible'}</h2>
+                                    <img src="${article.image_url || 'placeholder.jpg'}" alt="Image de l'article : ${article.titre || 'Non disponible'}" style="max-width: 100%; height: auto; margin-bottom: 20px;">
+                                    <p><strong>Résumé :</strong> ${article.resume || 'Résumé non disponible'}</p>
+                                    <div>
+                                        <h3>Contenu Complet :</h3>
+                                        <p>${contenuCompletAffiche}</p>
+                                    </div>
+                                    <p>Catégorie : ${categorieAffiche}</p>
+                                    <p>Date de publication : ${datePublicationAffiche}</p>
+                                `;
+                            }
+                        } else if (window.location.pathname.includes('edit-article.html')) {
+                            // Nouvelle logique pour pré-remplir le formulaire sur edit-article.html
+                            populateEditForm(article);
+                            const messageAreaEdit = document.getElementById('messageArea'); // Si une zone de message existe sur la page d'édition
+                            if (messageAreaEdit) messageAreaEdit.textContent = ''; // Efface tout message de chargement
+                        }
+                    } else {
+                        // Message "Article non trouvé" pour les deux pages
+                        const targetElement = window.location.pathname.includes('article-details.html') ? document.getElementById('article-detail-content') : document.getElementById('editArticleForm');
+                        const pageTitleElement = document.getElementById('article-title-display') || document.getElementById('edit-page-title'); // Assurez-vous d'avoir un élément avec l'ID 'edit-page-title' si vous voulez un titre spécifique sur la page d'édition
+                        if (pageTitleElement) {
+                            pageTitleElement.textContent = 'Article non trouvé';
+                        }
+                        if (targetElement) {
+                            targetElement.innerHTML = '<p>Article non trouvé.</p>';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors du chargement des détails de l\'article pour affichage ou édition :', error);
+                    const targetElement = window.location.pathname.includes('article-details.html') ? document.getElementById('article-detail-content') : document.getElementById('editArticleForm');
+                    const pageTitleElement = document.getElementById('article-title-display') || document.getElementById('edit-page-title');
+                    if (pageTitleElement) {
+                        pageTitleElement.textContent = 'Erreur de chargement';
+                    }
+                    if (targetElement) {
+                        targetElement.innerHTML = `<p>Impossible de charger les détails de l'article. Erreur: ${error.message}</p>`;
+                    }
+                });
+        } else {
+            console.log('Aucun ID d\'article trouvé dans l\'URL pour détails/édition.');
+            const targetElement = document.getElementById('article-detail-content') || document.getElementById('editArticleForm');
+            if (targetElement) {
+                targetElement.innerHTML = '<p>Article non spécifié.</p>';
+            }
+        }
+    }
 
 
     async function fetchArticles() {
         console.log("fetchArticles() : Fonction appelée."); // TRACE 13
-        // Cette section a été réorganisée pour être compatible avec les deux pages (articles.html et admin-articles.html)
         let targetContainer;
         let targetMessageArea;
 
-        // Détecte si on est sur la page articles.html ou admin-articles.html
-        if (document.getElementById('articles-container')) { // Si l'élément de la page publique existe
+        if (document.getElementById('articles-container')) {
             targetContainer = document.getElementById('articles-container');
-            targetMessageArea = document.getElementById('message-area'); // Zone de message pour articles.html
-        } else { // Sinon, on est sur la page d'administration
+            targetMessageArea = document.getElementById('message-area');
+        } else {
             targetContainer = articlesTableBody;
-            targetMessageArea = listMessageArea; // Zone de message pour admin-articles.html
+            targetMessageArea = listMessageArea;
         }
 
         if (targetMessageArea) {
@@ -207,7 +229,6 @@ document.addEventListener('DOMContentLoaded', function() {
             targetMessageArea.style.color = '#888';
         }
         if (targetContainer) {
-            // Pour articles.html, on remplace le contenu du div, pour admin-articles.html, on remplace le tbody
             if (targetContainer.id === 'articles-container') {
                 targetContainer.innerHTML = '<p style="text-align: center;">Chargement des articles...</p>';
             } else {
@@ -225,7 +246,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("fetchArticles() : Données reçues de l'API :", data); // TRACE 15
 
             if (data.success && data.articles) {
-                // Appel de displayArticles en passant le container et la zone de message appropriés
                 displayArticles(data.articles, targetContainer, targetMessageArea);
                 if (targetMessageArea) targetMessageArea.textContent = '';
                 console.log("fetchArticles() : Articles affichés avec succès."); // TRACE 16
@@ -262,11 +282,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // MODIFICATION DE LA SIGNATURE : Ajout de targetContainer et targetMessageArea
     function displayArticles(articles, targetContainer, targetMessageArea) {
         console.log("displayArticles() : Fonction appelée avec", articles.length, "articles."); // TRACE 17
         if (targetContainer) {
-            targetContainer.innerHTML = ''; // Vide le contenu actuel
+            targetContainer.innerHTML = '';
             if (articles.length === 0) {
                 const noArticlesMessage = '<p style="text-align: center;">Aucun article à afficher pour le moment.</p>';
                 if (targetContainer.id === 'articles-container') {
@@ -279,11 +298,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             articles.forEach(article => {
                 if (targetContainer.id === 'articles-container') {
-                    // Logique pour articles.html (affichage en cards)
                     const articleCard = document.createElement('article');
                     articleCard.classList.add('article-card');
 
-                    // Notez l'utilisation de `article.id_article` si votre get_articles.php renvoie `id_article` et non `id`
                     articleCard.innerHTML = `
                         <div class="article-image-container">
                             <img src="${article.image_url}" alt="Image de l'article : ${article.titre}">
@@ -297,13 +314,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
                     `;
-                    // --- AJOUT DE LA LIGNE DE DÉBOGAGE ICI ---
                     console.log("GENERATION DU LIEN - ID:", (article.id_article || article.id), "TITRE:", article.titre);
-                    // -----------------------------------------
                     targetContainer.appendChild(articleCard);
 
                 } else {
-                    // Logique pour admin-articles.html (affichage en tableau)
                     const row = targetContainer.insertRow();
                     row.innerHTML = `
                         <td>${article.id_article || article.id}</td>
@@ -319,7 +333,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Ajout des écouteurs de suppression uniquement pour admin-articles.html
             if (targetContainer.id !== 'articles-container') {
                 document.querySelectorAll('.btn-delete').forEach(button => {
                     button.addEventListener('click', async (event) => {
@@ -365,28 +378,70 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // L'appel initial à fetchArticles() DOIT être DANS le DOMContentLoaded
-    // Il doit être conditionnel pour ne s'exécuter que sur les pages concernées
     if (document.getElementById('articles-container') || document.getElementById('articlesTableBody')) {
         console.log("DOMContentLoaded : Appel initial de fetchArticles()."); // TRACE 20
         fetchArticles();
     }
 
-    // --- Code pour article-details.html ---
-    // Vérifie si nous sommes sur la page article-details.html
-    if (window.location.pathname.includes('article-details.html')) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const articleId = urlParams.get('id');
+    // --- NOUVEAU : Gestion de la soumission du formulaire d'édition ---
+    const editArticleForm = document.getElementById('editArticleForm');
+    if (editArticleForm) {
+        console.log("Edit Article : Formulaire d'édition trouvé. Ajout de l'écouteur de soumission.");
+        editArticleForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            console.log("Edit Article : Soumission du formulaire détectée.");
 
-        if (articleId) {
-            console.log('ID de l\'article à afficher :', articleId);
-            // AJOUT DE LA TRACE APRÈS L'APPEL POUR CONFIRMER L'EXÉCUTION
-            console.log("Appel de getArticleDetails effectué pour l'ID:", articleId);
-            // Appel de la fonction pour charger les détails de cet article
-            getArticleDetails(articleId);
-        } else {
-            console.log('Aucun ID d\'article trouvé dans l\'URL.');
-            document.getElementById('article-detail-content').innerHTML = '<p>Article non spécifié.</p>';
-        }
+            const articleData = {
+                id: document.getElementById('articleId').value, // Récupère l'ID du champ caché
+                titre: document.getElementById('titre').value,
+                imageUrl: document.getElementById('imageUrl').value,
+                datePublication: document.getElementById('datePublication').value,
+                resume: document.getElementById('resume').value,
+                contenuComplet: document.getElementById('contenuComplet').value
+            };
+
+            const apiUrl = 'backend/update_article.php'; // C'est le fichier PHP que vous devrez créer pour la mise à jour
+
+            try {
+                console.log("Edit Article : Tentative d'envoi de l'article mis à jour à l'API.");
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(articleData)
+                });
+
+                const result = await response.json();
+                console.log("Edit Article : Réponse de l'API de mise à jour d'article reçue :", result);
+
+                const messageAreaEdit = document.getElementById('messageArea'); // Assurez-vous d'avoir une zone de message sur edit-article.html
+                if (messageAreaEdit) {
+                    messageAreaEdit.textContent = result.message;
+                    if (result.success) {
+                        messageAreaEdit.style.color = 'green';
+                        alert("Article mis à jour avec succès !");
+                        // Optionnel : rediriger vers admin-articles.html après succès
+                        // window.location.href = 'admin-articles.html';
+                    } else {
+                        messageAreaEdit.style.color = 'red';
+                    }
+                } else {
+                    alert(result.message); // Fallback si pas de messageArea
+                }
+
+            } catch (error) {
+                const messageAreaEdit = document.getElementById('messageArea');
+                const errorMessage = "Erreur réseau ou interne lors de la mise à jour: " + error.message;
+                if (messageAreaEdit) {
+                    messageAreaEdit.textContent = errorMessage;
+                    messageAreaEdit.style.color = 'red';
+                } else {
+                    alert(errorMessage);
+                }
+                console.error('Erreur Fetch lors de la mise à jour:', error);
+            }
+        });
     }
 
     // Ligne de débogage pour s'assurer que le script est bien la dernière version chargée

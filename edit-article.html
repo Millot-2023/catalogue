@@ -16,8 +16,7 @@
                     <li><a href="index.html">Accueil</a></li>
                     <li><a href="articles.html">Articles</a></li>
                     <li><a href="#">Recherches</a></li>
-                    <!--<li><a href="admin-articles.html">Admin Articles</a></li>-->
-                </ul>
+                    </ul>
                 <button class="nav-toggle" aria-label="Toggle navigation">
                     <span class="hamburger"></span>
                     <span class="hamburger"></span>
@@ -29,7 +28,7 @@
 
     <main class="main-content-wrapper">
         <section class="content-section form-section">
-            <h1>Modifier l'Article</h1>
+            <h1 id="edit-page-title">Modifier l'Article</h1>
             <form id="editArticleForm" class="article-form">
                 <input type="hidden" id="articleId" name="id">
 
@@ -39,13 +38,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="image_url">URL de l'Image :</label>
-                    <input type="url" id="image_url" name="image_url">
+                    <label for="imageUrl">URL de l'Image :</label>
+                    <input type="url" id="imageUrl" name="imageUrl">
                 </div>
 
                 <div class="form-group">
-                    <label for="date_publication">Date de Publication :</label>
-                    <input type="date" id="date_publication" name="date_publication" required>
+                    <label for="datePublication">Date de Publication :</label>
+                    <input type="date" id="datePublication" name="datePublication" required>
                 </div>
 
                 <div class="form-group">
@@ -54,13 +53,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="contenu_complet">Contenu Complet :</label>
-                    <textarea id="contenu_complet" name="contenu_complet" rows="15" required></textarea>
+                    <label for="contenuComplet">Contenu Complet :</label>
+                    <textarea id="contenuComplet" name="contenuComplet" rows="15" required></textarea>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Mettre à jour l'Article</button>
-                <p id="message" class="form-message"></p>
-                <a href="admin-articles.html" class="btn btn-secondary" style="margin-top: 10px;">Retour à l'Administration des Articles</a>
+                <p id="messageArea" class="form-message"></p> <a href="admin-articles.html" class="btn btn-secondary" style="margin-top: 10px;">Retour à l'Administration des Articles</a>
             </form>
         </section>
     </main>
@@ -76,107 +74,5 @@
     </footer>
 
     <script src="js/script.js" defer></script>
-    <script>
-        const form = document.getElementById('editArticleForm');
-        const articleIdInput = document.getElementById('articleId');
-        const titreInput = document.getElementById('titre');
-        const imageUrlInput = document.getElementById('image_url');
-        const datePublicationInput = document.getElementById('date_publication');
-        const resumeInput = document.getElementById('resume');
-        const contenuCompletInput = document.getElementById('contenu_complet');
-        const messageDiv = document.getElementById('message');
-
-        // Récupère l'ID de l'article depuis l'URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const articleId = urlParams.get('id');
-
-        // URL de l'API pour récupérer les détails de l'article (celle qu'on a déjà)
-        const fetchApiUrl = `http://localhost/catalogue/backend/get_article_by_id.php?id=${articleId}`;
-        // URL de l'API pour mettre à jour l'article (sera créée juste après)
-        const updateApiUrl = 'http://localhost/catalogue/backend/update_article.php';
-
-        // Fonction pour charger les données de l'article et pré-remplir le formulaire
-        async function loadArticleData() {
-            if (!articleId) {
-                messageDiv.textContent = "ID de l'article manquant pour la modification.";
-                messageDiv.style.color = 'red';
-                return;
-            }
-
-            try {
-                const response = await fetch(fetchApiUrl);
-                if (!response.ok) {
-                    throw new Error(`Erreur HTTP: ${response.status}`);
-                }
-                const data = await response.json();
-
-                if (data.success && data.article) {
-                    const article = data.article;
-                    articleIdInput.value = article.id;
-                    titreInput.value = article.titre;
-                    imageUrlInput.value = article.image_url;
-                    datePublicationInput.value = article.date_publication;
-                    resumeInput.value = article.resume;
-                    contenuCompletInput.value = article.contenu_complet;
-                } else {
-                    messageDiv.textContent = "Erreur: " + (data.message || "Article non trouvé.");
-                    messageDiv.style.color = 'red';
-                }
-            } catch (error) {
-                messageDiv.textContent = "Erreur lors du chargement de l'article: " + error.message;
-                messageDiv.style.color = 'red';
-                console.error("Erreur de chargement:", error);
-            }
-        }
-
-        // Fonction pour soumettre le formulaire de mise à jour
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault(); // Empêche le rechargement de la page
-
-            // Création d'un objet JavaScript avec les données du formulaire
-            const articleData = {
-                id: articleIdInput.value,
-                titre: titreInput.value,
-                image_url: imageUrlInput.value,
-                date_publication: datePublicationInput.value,
-                resume: resumeInput.value,
-                contenu_complet: contenuCompletInput.value
-            };
-
-            try {
-                const response = await fetch(updateApiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json' // Indique au serveur que le corps est du JSON
-                    },
-                    body: JSON.stringify(articleData) // Convertit l'objet JavaScript en chaîne JSON
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Erreur HTTP: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                if (data.success) {
-                    messageDiv.textContent = "Article mis à jour avec succès !";
-                    messageDiv.style.color = 'green';
-                    // Rediriger l'utilisateur vers la page d'administration après un court délai
-                    setTimeout(() => { window.location.href = 'admin-articles.html'; }, 1500);
-                } else {
-                    messageDiv.textContent = "Erreur lors de la mise à jour : " + (data.message || "Erreur inconnue.");
-                    messageDiv.style.color = 'red';
-                }
-
-            } catch (error) {
-                messageDiv.textContent = "Erreur réseau ou interne: " + error.message;
-                messageDiv.style.color = 'red';
-                console.error("Erreur de mise à jour:", error);
-            }
-        });
-
-        // Charge les données au chargement de la page
-        loadArticleData();
-    </script>
-</body>
+    </body>
 </html>
