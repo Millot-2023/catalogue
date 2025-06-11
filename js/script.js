@@ -69,7 +69,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 contenuComplet: document.getElementById('contenuComplet').value
             };
 
-            const apiUrl = 'https://utm8561.webmo.fr/backend/add_article.php';
+            // *** CORRECTION ICI : Utilisation d'un chemin relatif pour le développement local ***
+            const apiUrl = 'backend/add_article.php';
 
             try {
                 console.log("Articles : Tentative d'envoi de l'article à l'API."); // TRACE 9
@@ -107,8 +108,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log("Articles : Éléments de la liste d'articles récupérés."); // TRACE 12
 
-    const fetchArticlesApiUrl = 'https://utm8561.webmo.fr/backend/get_articles.php';
-    const deleteArticleApiUrl = 'https://utm8561.webmo.fr/backend/delete_article.php';
+    // *** CORRECTION ICI : Utilisation de chemins relatifs pour le développement local ***
+    const fetchArticlesApiUrl = 'backend/get_articles.php';
+    const deleteArticleApiUrl = 'backend/delete_article.php';
 
     // --- DÉBUT DE LA FONCTION getArticleDetails DÉPLACÉE ET MODIFIÉE ---
     // Fonction pour charger les détails d'un article spécifique
@@ -124,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         articleContentDiv.innerHTML = '<p>Chargement des détails de l\'article...</p>'; // Message de chargement
 
-        // Assurez-vous que le chemin vers votre backend est correct (relatif ou absolu)
+        // *** CORRECTION ICI (si ce n'était pas déjà fait) : Utilisation d'un chemin relatif ***
         fetch(`backend/get_article_by_id.php?id=${id}`)
             .then(response => {
                 // AJOUT DE LA TRACE POUR VOIR LA RÉPONSE HTTP BRUTE
