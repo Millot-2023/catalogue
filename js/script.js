@@ -2,6 +2,49 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOMContentLoaded : Le DOM est entièrement chargé."); // TRACE 1
 
+    // --- Fonction utilitaire pour afficher des messages ---
+    function showMessage(targetElement, message, type = 'info') {
+        if (!targetElement) {
+            console.warn("showMessage: Élément cible non trouvé pour afficher le message.", message);
+            return;
+        }
+        targetElement.textContent = message;
+        targetElement.style.padding = '10px';
+        targetElement.style.borderRadius = '5px';
+        targetElement.style.marginTop = '10px';
+        targetElement.style.textAlign = 'center';
+
+        switch (type) {
+            case 'success':
+                targetElement.style.backgroundColor = '#d4edda';
+                targetElement.style.color = '#155724';
+                targetElement.style.border = '1px solid #c3e6cb';
+                break;
+            case 'error':
+                targetElement.style.backgroundColor = '#f8d7da';
+                targetElement.style.color = '#721c24';
+                targetElement.style.border = '1px solid #f5c6cb';
+                break;
+            case 'warning':
+                targetElement.style.backgroundColor = '#fff3cd';
+                targetElement.style.color = '#856404';
+                targetElement.style.border = '1px solid #ffeeba';
+                break;
+            case 'info':
+            default:
+                targetElement.style.backgroundColor = '#d1ecf1';
+                targetElement.style.color = '#0c5460';
+                targetElement.style.border = '1px solid #bee5eb';
+                break;
+        }
+
+        // Effacer le message après quelques secondes
+        setTimeout(() => {
+            targetElement.textContent = '';
+            targetElement.style = ''; // Réinitialise tous les styles
+        }, 5000); // Message disparaît après 5 secondes
+    }
+
     // --- Début du code existant pour la navigation ---
     const navToggle = document.querySelector('.nav-toggle');
     const navMenu = document.querySelector('.nav-menu');
@@ -51,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Début du code de gestion des articles (ajout, suppression, listage) ---
     const articleForm = document.getElementById('articleForm');
-    const messageArea = document.getElementById('messageArea'); // Pour admin-articles.html
+    const messageArea = document.getElementById('messageArea'); // Pour admin-articles.html ou add-article.html
 
     console.log("Articles : Éléments du formulaire d'article récupérés."); // TRACE 6
 
@@ -69,10 +112,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 contenuComplet: document.getElementById('contenuComplet').value
             };
 
-            const apiUrl = 'backend/add_article.php';
+            // Déterminer l'API URL basée sur la page (add_article.php ou update_article.php)
+            let apiUrl = 'backend/add_article.php';
+            const articleIdField = document.getElementById('articleId'); // Champ caché pour l'ID en mode édition
+
+            if (articleIdField && articleIdField.value) { // Si l'ID existe, c'est une mise à jour
+                apiUrl = 'backend/update_article.php';
+                articleData.id = articleIdField.value; // Ajoute l'ID aux données pour la mise à jour
+                console.log("Edit Article : Mode édition détecté, ID:", articleData.id);
+            } else {
+                console.log("Add Article : Mode ajout détecté.");
+            }
 
             try {
-                console.log("Articles : Tentative d'envoi de l'article à l'API."); // TRACE 9
+                console.log("Articles : Tentative d'envoi de l'article à l'API via :", apiUrl); // TRACE 9
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
@@ -82,22 +135,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 const result = await response.json();
-                console.log("Articles : Réponse de l'API d'ajout d'article reçue :", result); // TRACE 10
+                console.log("Articles : Réponse de l'API d'ajout/mise à jour d'article reçue :", result); // TRACE 10
 
-                messageArea.textContent = result.message;
                 if (result.success) {
-                    messageArea.style.color = 'green';
-                    articleForm.reset();
-                    console.log("Articles : Article ajouté avec succès. Appel de fetchArticles()."); // TRACE 11
-                    fetchArticles();
+                    showMessage(messageArea, result.message || "Opération réussie !", 'success');
+                    if (apiUrl.includes('add_article.php')) {
+                        articleForm.reset(); // Vider le formulaire seulement pour l'ajout
+                        console.log("Articles : Article ajouté avec succès. Appel de fetchArticles()."); // TRACE 11
+                        // Si nous sommes sur admin-articles, rafraîchir la liste
+                        if (document.getElementById('articlesTableBody')) {
+                           fetchArticles();
+                        }
+                    } else { // C'est une mise à jour
+                        console.log("Articles : Article mis à jour avec succès. Redirection vers l'administration.");
+                        // REDIRECTION AJOUTÉE ICI POUR LA MISE À JOUR
+                        window.location.href = 'admin-articles.html';
+                    }
                 } else {
-                    messageArea.style.color = 'red';
+                    showMessage(messageArea, "Erreur : " + result.message, 'error');
                 }
 
             } catch (error) {
-                messageArea.textContent = "Erreur réseau ou interne lors de l'ajout : " + error.message;
-                messageArea.style.color = 'red';
-                console.error('Erreur Fetch lors de l\'ajout:', error); // TRACE ERROR ADD
+                showMessage(messageArea, "Erreur réseau ou interne lors de l'opération : " + error.message, 'error');
+                console.error('Erreur Fetch lors de l\'ajout/mise à jour:', error); // TRACE ERROR ADD/UPDATE
             }
         });
     }
@@ -110,10 +170,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const fetchArticlesApiUrl = 'backend/get_articles.php';
     const deleteArticleApiUrl = 'backend/delete_article.php';
 
-    // Nouvelle fonction pour pré-remplir le formulaire d'édition
+    // Fonction pour pré-remplir le formulaire d'édition (utilisée sur edit-article.html)
     function populateEditForm(article) {
+        // Effacer les champs avant de les remplir pour s'assurer de la propreté
+        document.getElementById('articleId').value = '';
+        document.getElementById('titre').value = '';
+        document.getElementById('imageUrl').value = '';
+        document.getElementById('datePublication').value = '';
+        document.getElementById('resume').value = '';
+        document.getElementById('contenuComplet').value = '';
+
         if (!article || !article.id_article) {
             console.error("populateEditForm: Article data is invalid or missing ID.");
+            const messageAreaEdit = document.getElementById('messageArea');
+            if (messageAreaEdit) showMessage(messageAreaEdit, "Article non trouvé ou données invalides.", "error");
             return;
         }
 
@@ -124,6 +194,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('datePublication').value = article.date_publication || '';
         document.getElementById('resume').value = article.resume || '';
         document.getElementById('contenuComplet').value = article.contenuComplet || '';
+
+        const messageAreaEdit = document.getElementById('messageArea');
+        if (messageAreaEdit) messageAreaEdit.textContent = ''; // Efface tout message de chargement précédent
     }
 
 
@@ -133,34 +206,40 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.location.pathname.includes('article-details.html') || window.location.pathname.includes('edit-article.html')) {
         const urlParams = new URLSearchParams(window.location.search);
         const articleId = urlParams.get('id');
+        const isEditPage = window.location.pathname.includes('edit-article.html');
+        const targetElement = isEditPage ? document.getElementById('articleForm') : document.getElementById('article-detail-content'); // Utilisez articleForm
+        const pageTitleElement = document.getElementById('article-title-display') || document.getElementById('edit-page-title');
+        const messageAreaSpecific = document.getElementById('messageArea') || document.getElementById('article-detail-message');
 
         if (articleId) {
-            console.log('ID de l\'article à afficher/modifier :', articleId);
-            // Fetch article details
+            console.log(`Chargement de l'article ID ${articleId} pour ${isEditPage ? 'édition' : 'affichage des détails'}.`);
+            if (messageAreaSpecific) showMessage(messageAreaSpecific, `Chargement de l'article ID ${articleId}...`, 'info');
+
             fetch(`backend/get_article_by_id.php?id=${articleId}`)
                 .then(response => {
                     console.log("Fetch pour détails/édition: Réponse HTTP reçue, statut:", response.status);
                     if (!response.ok) {
-                        throw new Error(`Erreur HTTP: ${response.status}`);
+                        return response.json().catch(() => ({ message: `Erreur HTTP: ${response.status}` })).then(err => {
+                            throw new Error(err.message || `Erreur HTTP: ${response.status}`);
+                        });
                     }
                     return response.json();
                 })
                 .then(article => {
                     console.log("Données de l'article reçues pour détails/édition :", article);
                     if (article && article.id_article) {
-                        if (window.location.pathname.includes('article-details.html')) {
-                            // Logique existante pour l'affichage des détails sur article-details.html
-                            const articleContentDiv = document.getElementById('article-detail-content');
-                            if (articleContentDiv) {
-                                const pageTitleElement = document.getElementById('article-title-display');
-                                if (pageTitleElement) {
-                                    pageTitleElement.textContent = article.titre || 'Titre non disponible';
-                                }
+                        if (isEditPage) {
+                            populateEditForm(article);
+                            if (pageTitleElement) pageTitleElement.textContent = `Modifier l'article : ${article.titre || 'Sans titre'}`;
+                            if (messageAreaSpecific) messageAreaSpecific.textContent = ''; // Clear loading message
+                        } else { // article-details.html
+                            if (pageTitleElement) pageTitleElement.textContent = article.titre || 'Titre non disponible';
+                            if (targetElement) {
                                 const contenuCompletAffiche = article.contenuComplet || 'Contenu complet non disponible.';
                                 const categorieAffiche = article.categorie || 'Non spécifiée';
                                 const datePublicationAffiche = article.date_publication || 'Date non spécifiée';
 
-                                articleContentDiv.innerHTML = `
+                                targetElement.innerHTML = `
                                     <h2>${article.titre || 'Titre non disponible'}</h2>
                                     <img src="${article.image_url || 'placeholder.jpg'}" alt="Image de l'article : ${article.titre || 'Non disponible'}" style="max-width: 100%; height: auto; margin-bottom: 20px;">
                                     <p><strong>Résumé :</strong> ${article.resume || 'Résumé non disponible'}</p>
@@ -172,41 +251,31 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <p>Date de publication : ${datePublicationAffiche}</p>
                                 `;
                             }
-                        } else if (window.location.pathname.includes('edit-article.html')) {
-                            // Nouvelle logique pour pré-remplir le formulaire sur edit-article.html
-                            populateEditForm(article);
-                            const messageAreaEdit = document.getElementById('messageArea'); // Si une zone de message existe sur la page d'édition
-                            if (messageAreaEdit) messageAreaEdit.textContent = ''; // Efface tout message de chargement
+                            if (messageAreaSpecific) messageAreaSpecific.textContent = ''; // Clear loading message
                         }
                     } else {
-                        // Message "Article non trouvé" pour les deux pages
-                        const targetElement = window.location.pathname.includes('article-details.html') ? document.getElementById('article-detail-content') : document.getElementById('editArticleForm');
-                        const pageTitleElement = document.getElementById('article-title-display') || document.getElementById('edit-page-title'); // Assurez-vous d'avoir un élément avec l'ID 'edit-page-title' si vous voulez un titre spécifique sur la page d'édition
-                        if (pageTitleElement) {
-                            pageTitleElement.textContent = 'Article non trouvé';
-                        }
-                        if (targetElement) {
-                            targetElement.innerHTML = '<p>Article non trouvé.</p>';
-                        }
+                        const message = "Article non trouvé ou données invalides.";
+                        if (pageTitleElement) pageTitleElement.textContent = 'Article non trouvé';
+                        if (targetElement) targetElement.innerHTML = `<p>${message}</p>`;
+                        if (messageAreaSpecific) showMessage(messageAreaSpecific, message, 'error');
+                        if (isEditPage) populateEditForm({}); // Vider les champs du formulaire d'édition
                     }
                 })
                 .catch(error => {
                     console.error('Erreur lors du chargement des détails de l\'article pour affichage ou édition :', error);
-                    const targetElement = window.location.pathname.includes('article-details.html') ? document.getElementById('article-detail-content') : document.getElementById('editArticleForm');
-                    const pageTitleElement = document.getElementById('article-title-display') || document.getElementById('edit-page-title');
-                    if (pageTitleElement) {
-                        pageTitleElement.textContent = 'Erreur de chargement';
-                    }
-                    if (targetElement) {
-                        targetElement.innerHTML = `<p>Impossible de charger les détails de l'article. Erreur: ${error.message}</p>`;
-                    }
+                    const errorMessage = `Impossible de charger les détails de l'article. Erreur: ${error.message}`;
+                    if (pageTitleElement) pageTitleElement.textContent = 'Erreur de chargement';
+                    if (targetElement) targetElement.innerHTML = `<p>${errorMessage}</p>`;
+                    if (messageAreaSpecific) showMessage(messageAreaSpecific, errorMessage, 'error');
+                    if (isEditPage) populateEditForm({}); // Vider les champs du formulaire d'édition
                 });
         } else {
             console.log('Aucun ID d\'article trouvé dans l\'URL pour détails/édition.');
-            const targetElement = document.getElementById('article-detail-content') || document.getElementById('editArticleForm');
-            if (targetElement) {
-                targetElement.innerHTML = '<p>Article non spécifié.</p>';
-            }
+            const message = 'Article non spécifié dans l\'URL.';
+            if (pageTitleElement) pageTitleElement.textContent = 'Article non spécifié';
+            if (targetElement) targetElement.innerHTML = `<p>${message}</p>`;
+            if (messageAreaSpecific) showMessage(messageAreaSpecific, message, 'warning');
+            if (isEditPage) populateEditForm({}); // Vider les champs du formulaire d'édition
         }
     }
 
@@ -216,17 +285,21 @@ document.addEventListener('DOMContentLoaded', function() {
         let targetContainer;
         let targetMessageArea;
 
-        if (document.getElementById('articles-container')) {
+        // Déterminer où afficher les articles et les messages en fonction de la page
+        if (document.getElementById('articles-container')) { // Page d'accueil (index.html ou similaire)
             targetContainer = document.getElementById('articles-container');
             targetMessageArea = document.getElementById('message-area');
-        } else {
+        } else if (document.getElementById('articlesTableBody')) { // Page d'administration (admin-articles.html)
             targetContainer = articlesTableBody;
             targetMessageArea = listMessageArea;
+        } else {
+            console.warn("fetchArticles(): Aucun conteneur d'articles identifiable trouvé (articles-container ou articlesTableBody).");
+            return; // Sortir si aucun conteneur n'est trouvé
         }
 
+
         if (targetMessageArea) {
-            targetMessageArea.textContent = 'Chargement des articles...';
-            targetMessageArea.style.color = '#888';
+            showMessage(targetMessageArea, 'Chargement des articles...', 'info');
         }
         if (targetContainer) {
             if (targetContainer.id === 'articles-container') {
@@ -240,20 +313,22 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("fetchArticles() : Tentative de récupération des articles depuis :", fetchArticlesApiUrl); // TRACE 14
             const response = await fetch(fetchArticlesApiUrl);
             if (!response.ok) {
-                throw new Error(`Erreur HTTP: ${response.status}`);
+                // Tenter de lire le message d'erreur du serveur si disponible
+                const errorData = await response.json().catch(() => ({ message: `Erreur HTTP: ${response.status}` }));
+                throw new Error(errorData.message || `Erreur HTTP: ${response.status}`);
             }
             const data = await response.json();
             console.log("fetchArticles() : Données reçues de l'API :", data); // TRACE 15
 
             if (data.success && data.articles) {
                 displayArticles(data.articles, targetContainer, targetMessageArea);
-                if (targetMessageArea) targetMessageArea.textContent = '';
+                // Le message de succès sera effacé par setTimeout dans showMessage
+                // if (targetMessageArea) showMessage(targetMessageArea, 'Articles chargés avec succès !', 'success');
                 console.log("fetchArticles() : Articles affichés avec succès."); // TRACE 16
             } else {
                 const message = data.message || "Aucun article trouvé.";
                 if (targetMessageArea) {
-                    targetMessageArea.textContent = "Erreur lors du chargement des articles : " + message;
-                    targetMessageArea.style.color = 'red';
+                    showMessage(targetMessageArea, "Erreur lors du chargement des articles : " + message, 'error');
                 }
                 if (targetContainer) {
                     if (targetContainer.id === 'articles-container') {
@@ -268,8 +343,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             const errorMessage = "Impossible de charger les articles. Erreur: " + error.message;
             if (targetMessageArea) {
-                targetMessageArea.textContent = errorMessage;
-                targetMessageArea.style.color = 'red';
+                showMessage(targetMessageArea, errorMessage, 'error');
             }
             if (targetContainer) {
                 if (targetContainer.id === 'articles-container') {
@@ -285,7 +359,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayArticles(articles, targetContainer, targetMessageArea) {
         console.log("displayArticles() : Fonction appelée avec", articles.length, "articles."); // TRACE 17
         if (targetContainer) {
-            targetContainer.innerHTML = '';
+            targetContainer.innerHTML = ''; // Nettoyer le contenu existant
             if (articles.length === 0) {
                 const noArticlesMessage = '<p style="text-align: center;">Aucun article à afficher pour le moment.</p>';
                 if (targetContainer.id === 'articles-container') {
@@ -293,6 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     targetContainer.innerHTML = '<tr><td colspan="6" style="text-align: center;">Aucun article à afficher.</td></tr>';
                 }
+                if (targetMessageArea) showMessage(targetMessageArea, 'Aucun article à afficher.', 'info');
                 return;
             }
 
@@ -301,39 +376,49 @@ document.addEventListener('DOMContentLoaded', function() {
                     const articleCard = document.createElement('article');
                     articleCard.classList.add('article-card');
 
+                    // S'assurer que les propriétés existent pour éviter 'undefined'
+                    const imageUrl = article.image_url || 'placeholder.jpg';
+                    const titre = article.titre || 'Titre non disponible';
+                    const datePublication = article.date_publication || 'Date non spécifiée';
+                    const resume = article.resume || 'Résumé non disponible';
+                    const articleId = article.id_article || article.id || ''; // Gérer id_article ou id
+
                     articleCard.innerHTML = `
                         <div class="article-image-container">
-                            <img src="${article.image_url}" alt="Image de l'article : ${article.titre}">
+                            <img src="${imageUrl}" alt="Image de l'article : ${titre}">
                         </div>
                         <div class="card-content">
-                            <h3>${article.titre}</h3>
-                            <p class="article-date">Publié le: ${article.date_publication}</p>
-                            <p>${article.resume}</p>
+                            <h3>${titre}</h3>
+                            <p class="article-date">Publié le: ${datePublication}</p>
+                            <p>${resume}</p>
                             <div class="card-button-wrapper">
-                                <a href="article-details.html?id=${article.id_article || article.id}" class="read-more-btn">Lire la suite</a>
+                                <a href="article-details.html?id=${articleId}" class="read-more-btn">Lire la suite</a>
                             </div>
                         </div>
                     `;
-                    console.log("GENERATION DU LIEN - ID:", (article.id_article || article.id), "TITRE:", article.titre);
+                    console.log("GENERATION DU LIEN - ID:", articleId, "TITRE:", titre);
                     targetContainer.appendChild(articleCard);
 
-                } else {
+                } else { // C'est une table (admin-articles.html)
                     const row = targetContainer.insertRow();
+                    const articleId = article.id_article || article.id || '';
+
                     row.innerHTML = `
-                        <td>${article.id_article || article.id}</td>
-                        <td>${article.titre}</td>
-                        <td><img src="${article.image_url}" alt="Image" style="width: 50px; height: auto;"></td>
-                        <td>${article.date_publication}</td>
-                        <td>${article.resume.substring(0, 70)}...</td>
+                        <td>${articleId}</td>
+                        <td>${article.titre || ''}</td>
+                        <td><img src="${article.image_url || 'placeholder.jpg'}" alt="Image" style="width: 50px; height: auto;"></td>
+                        <td>${article.date_publication || ''}</td>
+                        <td>${(article.resume || '').substring(0, 70)}...</td>
                         <td class="actions-cell">
-                            <a href="edit-article.html?id=${article.id_article || article.id}" class="btn btn-edit">Modifier</a>
-                            <button class="btn btn-delete" data-id="${article.id_article || article.id}">Supprimer</button>
+                            <a href="edit-article.html?id=${articleId}" class="btn btn-edit">Modifier</a>
+                            <button class="btn btn-delete" data-id="${articleId}">Supprimer</button>
                         </td>
                     `;
                 }
             });
 
-            if (targetContainer.id !== 'articles-container') {
+            // Ajout des écouteurs d'événements de suppression si nous sommes sur la page d'administration
+            if (targetContainer.id === 'articlesTableBody') {
                 document.querySelectorAll('.btn-delete').forEach(button => {
                     button.addEventListener('click', async (event) => {
                         const articleId = event.target.dataset.id;
@@ -347,33 +432,41 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function deleteArticle(id) {
-        console.log("deleteArticle() : Tentative de suppression de l'article ID:", id); // TRACE 18
+        console.log("SCRIPT: deleteArticle() - Tentative de suppression de l'article ID:", id);
+        const targetMessageArea = document.getElementById('listMessageArea') || document.getElementById('message-area'); // Utilisez la même zone de message pour la liste
+
         try {
-            const formData = new FormData();
-            formData.append('id', id);
+            const params = new URLSearchParams();
+            params.append('id', id);
 
             const response = await fetch(deleteArticleApiUrl, {
-                method: 'POST',
-                body: formData
+                method: 'POST', // La méthode POST est utilisée car DELETE peut poser des problèmes avec certains serveurs PHP si non configurés
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded' // Important pour URLSearchParams
+                },
+                body: params.toString() // Convertit les paramètres en chaîne pour le corps de la requête
             });
 
+            // Vérifier si la réponse HTTP est OK (statut 200-299)
             if (!response.ok) {
-                throw new Error(`Erreur HTTP: ${response.status}`);
+                const errorData = await response.json().catch(() => ({ message: `Erreur HTTP: ${response.status}` }));
+                throw new Error(errorData.message || `Erreur HTTP: ${response.status}`);
             }
 
             const data = await response.json();
-            console.log("deleteArticle() : Réponse de l'API de suppression :", data); // TRACE 19
+            console.log("SCRIPT: deleteArticle() - Réponse de l'API de suppression :", data);
 
             if (data.success) {
-                alert("Article supprimé avec succès !");
+                showMessage(targetMessageArea, "Article supprimé avec succès !", 'success');
+                // Rafraîchir la liste des articles après une suppression réussie
                 fetchArticles();
             } else {
-                alert("Erreur lors de la suppression : " + data.message);
+                showMessage(targetMessageArea, "Erreur lors de la suppression : " + data.message, 'error');
             }
 
         } catch (error) {
-            alert("Erreur réseau ou interne lors de la suppression: " + error.message);
-            console.error("Erreur de suppression:", error); // TRACE ERROR DELETE
+            showMessage(targetMessageArea, "Erreur réseau ou interne lors de la suppression: " + error.message, 'error');
+            console.error("SCRIPT: Erreur de suppression:", error);
         }
     }
 
@@ -381,67 +474,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('articles-container') || document.getElementById('articlesTableBody')) {
         console.log("DOMContentLoaded : Appel initial de fetchArticles()."); // TRACE 20
         fetchArticles();
-    }
-
-    // --- NOUVEAU : Gestion de la soumission du formulaire d'édition ---
-    const editArticleForm = document.getElementById('editArticleForm');
-    if (editArticleForm) {
-        console.log("Edit Article : Formulaire d'édition trouvé. Ajout de l'écouteur de soumission.");
-        editArticleForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            console.log("Edit Article : Soumission du formulaire détectée.");
-
-            const articleData = {
-                id: document.getElementById('articleId').value, // Récupère l'ID du champ caché
-                titre: document.getElementById('titre').value,
-                imageUrl: document.getElementById('imageUrl').value,
-                datePublication: document.getElementById('datePublication').value,
-                resume: document.getElementById('resume').value,
-                contenuComplet: document.getElementById('contenuComplet').value
-            };
-
-            const apiUrl = 'backend/update_article.php'; // C'est le fichier PHP que vous devrez créer pour la mise à jour
-
-            try {
-                console.log("Edit Article : Tentative d'envoi de l'article mis à jour à l'API.");
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(articleData)
-                });
-
-                const result = await response.json();
-                console.log("Edit Article : Réponse de l'API de mise à jour d'article reçue :", result);
-
-                const messageAreaEdit = document.getElementById('messageArea'); // Assurez-vous d'avoir une zone de message sur edit-article.html
-                if (messageAreaEdit) {
-                    messageAreaEdit.textContent = result.message;
-                    if (result.success) {
-                        messageAreaEdit.style.color = 'green';
-                        alert("Article mis à jour avec succès !");
-                        // Optionnel : rediriger vers admin-articles.html après succès
-                        // window.location.href = 'admin-articles.html';
-                    } else {
-                        messageAreaEdit.style.color = 'red';
-                    }
-                } else {
-                    alert(result.message); // Fallback si pas de messageArea
-                }
-
-            } catch (error) {
-                const messageAreaEdit = document.getElementById('messageArea');
-                const errorMessage = "Erreur réseau ou interne lors de la mise à jour: " + error.message;
-                if (messageAreaEdit) {
-                    messageAreaEdit.textContent = errorMessage;
-                    messageAreaEdit.style.color = 'red';
-                } else {
-                    alert(errorMessage);
-                }
-                console.error('Erreur Fetch lors de la mise à jour:', error);
-            }
-        });
     }
 
     // Ligne de débogage pour s'assurer que le script est bien la dernière version chargée

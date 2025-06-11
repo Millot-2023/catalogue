@@ -404,7 +404,7 @@ strong, b {
   margin: 0;
   font-size: 0.9em;
 }
-.main-footer .footer-content .footer-content .footer-links {
+.main-footer .footer-content .footer-links { /* Correction ici: il y avait un .footer-content en trop */
   list-style: none;
   margin: 0;
   padding: 0;
@@ -413,13 +413,13 @@ strong, b {
   justify-content: center;
   gap: 15px;
 }
-.main-footer .footer-content .footer-content .footer-links li a {
+.main-footer .footer-content .footer-links li a { /* Correction ici: il y avait un .footer-content en trop */
   color: #ffffff;
   text-decoration: none;
   font-size: 0.9em;
   transition: color 0.3s ease-in-out;
 }
-.main-footer .footer-content .footer-content .footer-links li a:hover {
+.main-footer .footer-content .footer-links li a:hover { /* Correction ici: il y avait un .footer-content en trop */
   color: white;
 }
 /* --- Hero Section --- */
@@ -1127,5 +1127,157 @@ strong, b {
   background-color: #bd2130;
 }
 
-/*C'est une bonne pratique de centraliser ce type de valeurs dans _variables.scss. Si light-gray (#f8f9fa) est très proche de #f9f9f9, ou si medium-gray (#dee2e6) ou une autre variable pourrait représenter #eee, vous pourriez les remplacer pour une meilleure maintenabilité. Mais ce n'est pas une erreur, juste une opportunité d'optimisation si vous le souhaitez.*/
-/*# sourceMappingURL=styles.css.map */
+/* Styles Spécifiques pour la Page Détail d'Article (article-details.html) - AJOUTÉS */
+
+/* Conteneur principal du contenu de l'article.
+   Il utilise déjà .main-content dans votre HTML, mais nous pouvons le cibler plus spécifiquement pour la page de détail.
+   Si .main-content est déjà défini globalement pour le padding, cette section n'a pas besoin d'une surcharge.
+*/
+/* .main-content {
+    padding: 20px 0;
+} */
+
+/* Section spécifique pour l'affichage des détails d'un article */
+.article-detail-section {
+    background-color: #ffffff; /* Fond blanc pour le contenu de l'article */
+    padding: 40px; /* Padding interne pour l'article */
+    margin-top: 30px; /* Marge au-dessus de la section de l'article */
+    margin-bottom: 30px; /* Marge en dessous de la section de l'article */
+    border-radius: 8px; /* Bords légèrement arrondis */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Une petite ombre pour donner du relief */
+    /* Assurez-vous que cette section est bien centrée si elle n'est pas dans un .container global */
+    max-width: 1000px; /* Limite la largeur de cette section */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Votre .container général est déjà défini et très bien.
+   Nous allons nous assurer que celui dans article-details.html (avec la classe supplémentaire .article-detail-container)
+   prend les bonnes dimensions si nécessaire, mais le .container de base devrait suffire.
+*/
+/* .container.article-detail-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+} */
+
+
+/* Styles pour le titre principal de l'article (id="article-title-display") */
+/* Note: Vous avez déjà un h1 {} et content-section h1 {}.
+   Celui-ci est plus spécifique pour la page de détail. */
+#article-title-display {
+    font-size: 2.5em; /* Taille du titre plus grande */
+    color: #28a745; /* Utilisation de votre couleur verte primaire pour la cohérence */
+    margin-bottom: 20px; /* Marge en dessous du titre */
+    text-align: center; /* Centre le titre */
+    /* Assurez-vous que le h1 dans le HTML est bien id="article-title-display" */
+}
+
+/* Styles pour l'image de l'article injectée dans #article-detail-content */
+#article-detail-content img {
+    max-width: 100%; /* S'assure que l'image ne dépasse pas la largeur du conteneur */
+    height: auto; /* Maintient le ratio de l'image */
+    display: block; /* Supprime l'espace sous l'image */
+    margin: 30px auto; /* Centre l'image et ajoute des marges au-dessus et en dessous */
+    border-radius: 5px; /* Petits bords arrondis pour l'image */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Légère ombre pour l'image */
+}
+
+/* Styles pour le résumé (p:first-of-type) qui est injecté dans #article-detail-content */
+/* Si le résumé est un <p> et que le contenu complet est dans un <div>, cela fonctionnera bien. */
+#article-detail-content p:first-of-type {
+    font-size: 1.1em;
+    font-style: italic;
+    color: #555;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee; /* Une ligne fine pour séparer le résumé */
+    text-align: justify; /* Justifie le texte du résumé */
+}
+
+/* Styles pour le contenu complet (le texte principal qui est un DIV dans le script) */
+/* Cible les paragraphes et autres éléments *à l'intérieur* de ce DIV de contenu */
+#article-detail-content div p { /* Les paragraphes du contenu complet */
+    font-size: 1em; /* Utilise la taille de base du texte */
+    margin-bottom: 1em;
+    text-align: justify; /* Justifie le texte pour un aspect plus propre */
+    color: #495057; /* Utilise votre couleur de texte par défaut */
+}
+
+/* Si vous avez des sous-titres (H2, H3, H4) dans le contenu complet injecté */
+#article-detail-content div h2 {
+    font-size: 2em; /* Ou une taille que vous préférez */
+    color: #28a745; /* Votre couleur primaire */
+    margin-top: 40px;
+    margin-bottom: 20px;
+    text-align: left; /* Ou center, selon votre préférence */
+}
+
+#article-detail-content div h3 {
+    font-size: 1.75em; /* Ou une taille que vous préférez */
+    color: #495057; /* Votre couleur de texte */
+    margin-top: 30px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+/* Styles pour les informations de catégorie et date (les derniers paragraphes injectés) */
+#article-detail-content p.article-detail-category,
+#article-detail-content p.article-detail-date {
+    font-size: 0.9em;
+    color: #777;
+    margin-top: 15px;
+    /* Vous pouvez les aligner à droite ou à gauche */
+}
+
+#article-detail-content p.article-detail-date {
+    text-align: right; /* Aligne la date à droite */
+    padding-top: 15px;
+    border-top: 1px solid #eee; /* Ligne fine pour séparer le pied de l'article */
+}
+
+/* Styles pour les messages d'erreur/succès sur la page de détail */
+#article-detail-message {
+    margin: 20px auto;
+    max-width: 80%;
+}
+
+
+/* ===================================== */
+/* Media Queries pour la Page Détail d'Article */
+/* ===================================== */
+@media (max-width: 768px) {
+    .article-detail-section {
+        padding: 20px; /* Moins de padding sur mobile */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    #article-title-display {
+        font-size: 2em; /* Titre plus petit sur mobile */
+        text-align: left; /* Aligne le titre à gauche sur mobile si nécessaire */
+    }
+
+    #article-detail-content p:first-of-type {
+        font-size: 1em; /* Résumé légèrement plus petit */
+        text-align: left; /* Justifie le texte du résumé */
+    }
+
+    #article-detail-content div p {
+        text-align: left; /* Justifie le texte du contenu principal */
+    }
+
+    #article-detail-content div h2 {
+        font-size: 1.6em;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        text-align: left;
+    }
+
+    #article-detail-content div h3 {
+        font-size: 1.4em;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        text-align: left;
+    }
+}
