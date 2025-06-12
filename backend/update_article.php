@@ -72,11 +72,11 @@ try {
     // Les noms des colonnes ici DOIVENT correspondre EXACTEMENT à votre BDD (vus dans phpMyAdmin)
     $sql = "UPDATE articles SET
                 titre = :titre,
-                image_url = :imageUrl,          -- Colonne BDD 'image_url' (vu dans phpMyAdmin), valeur variable 'imageUrl'
-                date_publication = :datePublication, -- Colonne BDD 'date_publication' (vu dans phpMyAdmin), valeur variable 'datePublication'
+                image_url = :imageUrl,
+                date_publication = :datePublication,
                 resume = :resume,
-                contenu_complet = :contenuComplet -- Colonne BDD 'contenu_complet' (vu dans phpMyAdmin), valeur variable 'contenuComplet'
-            WHERE id = :id"; // CORRIGÉ ICI : 'id_article' remplacé par 'id' (vu dans phpMyAdmin)
+                contenu_complet = :contenuComplet
+            WHERE id = :id"; // 'id' est le nom de la colonne dans votre table
 
     $stmt = $pdo->prepare($sql);
 

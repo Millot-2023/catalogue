@@ -28,7 +28,23 @@ try {
 }
 
 // Récupérer les données POST (en JSON)
-$data = json_decode(file_get_contents("php://input"), true);
+//$data = json_decode(file_get_contents("php://input"), true);
+
+
+// Récupérer les données POST (en JSON) - COMMENTEZ OU SUPPRIMEZ CETTE LIGNE
+// $data = json_decode(file_get_contents("php://input"), true);
+
+// Données de test temporaires pour simuler une requête POST JSON
+$data = [
+    'titre' => 'Mon article de test direct',
+    'imageUrl' => 'images/direct_test.jpg',
+    'datePublication' => '2025-06-12', // Assurez-vous que la date est au format YYYY-MM-DD
+    'resume' => 'Résumé pour le test direct.',
+    'contenuComplet' => 'Contenu complet pour le test direct.'
+];
+
+
+
 
 // Assigner les données aux variables, avec des valeurs par défaut si non présentes
 $titre = $data['titre'] ?? '';
