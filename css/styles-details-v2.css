@@ -1,0 +1,143 @@
+/* Styles pour la section d'introduction existante */
+.article-detail-section.intro-section { /* Cibler spécifiquement la classe 'intro-section' pour le fond */
+    background-color: lightgrey; /* Correction: le '/' a été supprimé ici */
+    padding: 30px 0;
+    margin-bottom: 30px;
+    /* border-bottom: 1px solid #eee; */ /* J'ai commenté cette ligne si vous voulez juste le fond rouge vif pour l'instant */
+}
+
+
+/* Styles de base pour tous les blocs de contenu */
+.container {
+    max-width: 1200px; /* Largeur maximale par défaut pour la plupart des blocs */
+    margin: 0 auto; /* Centre le conteneur */
+    padding: 20px; /* Padding interne pour ne pas coller aux bords */
+}
+
+.content-block {
+    padding: 60px 0; /* Espacement vertical entre les blocs */
+    /* background-color: #f9f9f9; */ /* COMMENTÉ : Plus de fond gris sur les blocs de contenu */
+    margin-bottom: 20px; /* Marge en bas pour séparer les blocs s'ils se suivent */
+}
+
+.content-block:nth-child(even) {
+    /* background-color: #f0f0f0; */ /* COMMENTÉ : Plus d'alternance de fond gris sur les blocs de contenu */
+}
+
+/* Styles spécifiques au bloc "Image à gauche, texte à droite" */
+.image-left-text-right .block-inner-wrapper {
+    display: flex;
+    flex-direction: row; /* Par défaut : image et texte côte à côte */
+    align-items: center; /* Centre verticalement les éléments */
+    gap: 40px; /* Espacement entre l'image et le texte */
+}
+
+.image-left-text-right .block-image {
+    flex: 1; /* Permet à l'image de prendre l'espace disponible */
+    min-width: 300px; /* Largeur minimale pour l'image avant de passer en colonne */
+}
+
+.image-left-text-right .block-image img {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Supprime l'espace sous l'image */
+    border-radius: 8px; /* Bords légèrement arrondis pour l'image */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Ombre douce */
+}
+
+.image-left-text-right .block-text {
+    flex: 2; /* Permet au texte de prendre plus d'espace */
+}
+
+.image-left-text-right .block-text h2 {
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 15px;
+}
+
+.image-left-text-right .block-text p {
+    line-height: 1.7;
+    margin-bottom: 15px;
+    color: #555;
+    /* Important pour gérer le flottement, assure que le texte s'enroule correctement */
+    overflow: hidden; /* Empêche le contenu de déborder si des éléments flottants le dépassent */
+    /* Alternative plus moderne si nécessaire : display: flow-root; */
+}
+
+/* Styles pour l'image flottante INLINE */
+.float-left-inline {
+    float: left;
+    margin: 0 15px 10px 0; /* Marge droite et bas pour le texte, pas de marge gauche/haut */
+    border-radius: 4px; /* Petits bords arrondis */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Ombre légère */
+    width: 60px; /* Taille fixe de l'image */
+    height: 80px; /* Taille fixe de l'image */
+    object-fit: cover; /* S'assure que l'image couvre bien les dimensions sans déformation */
+}
+
+
+.image-left-text-right .block-text ul {
+    margin-bottom: 15px;
+    padding-left: 20px;
+    list-style: disc;
+}
+
+.image-left-text-right .block-text ul li {
+    margin-bottom: 5px;
+    color: #555;
+}
+
+/* Styles pour le bouton */
+.button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+
+/* Responsivité pour les petits écrans (mobiles) */
+@media (max-width: 768px) {
+    .image-left-text-right .block-inner-wrapper {
+        flex-direction: column; /* Empile l'image du bloc au-dessus du texte */
+        text-align: center; /* Centre le texte sur mobile */
+    }
+
+    .image-left-text-right .block-image {
+        min-width: unset; /* Annule la largeur minimale */
+        margin-bottom: 20px; /* Espacement entre l'image du bloc et le texte empilé */
+    }
+
+    .image-left-text-right .block-text {
+        flex: unset; /* Annule le flex sur le texte */
+    }
+
+    .image-left-text-right .block-text h2 {
+        font-size: 1.8em; /* Réduit la taille du titre */
+    }
+
+    /* Ajustement pour l'image flottante sur mobile */
+    .float-left-inline {
+        float: none; /* Annule le flottement */
+        display: block; /* Devient un bloc pour centrage */
+        margin: 0 auto 10px auto; /* Centre l'image et ajoute une marge en bas */
+    }
+}
+
+@media (max-width: 480px) {
+    .content-block {
+        padding: 40px 0;
+    }
+
+    .container {
+        padding: 15px;
+    }
+}

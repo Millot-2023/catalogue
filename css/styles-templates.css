@@ -1,0 +1,238 @@
+/* ==================================================================== */
+/* Styles spécifiques à la page des Modèles d'Articles (articles-templates.html) */
+/* Ce fichier contient les styles des blocs réutilisables pour le "Book" */
+/* ==================================================================== */
+
+/* --- Styles de base pour la page de templates --- */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+/* Correction pour le contenu sous la navigation fixe */
+.main-content {
+    padding-top: 80px; /* Adapte la hauteur de la navigation */
+}
+
+/* Styles pour la section d'introduction de la page de templates */
+.intro-section {
+    background-color: #e0e0e0;
+    padding: 2em;
+    margin: 2em auto;
+    max-width: 900px;
+    text-align: center;
+}
+
+.intro-section h1 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 2.5em;
+}
+
+.intro-section p {
+    color: #555;
+    font-size: 1.1em;
+}
+
+/* --- Styles COMMUNS à TOUS les blocs de contenu (1, 2, 3 colonnes) --- */
+/* Cette classe assure l'uniformité visuelle de base */
+.template-bloc-commun {
+    background-color: #ffffff; /* Fond blanc unifié pour tous les blocs */
+    padding: 40px; /* Padding interne unifié */
+    margin: 40px auto; /* Marge supérieure/inférieure et centrage automatique */
+    max-width: 1100px; /* Largeur maximale commune à tous les blocs */
+    border-radius: 8px; /* Bords arrondis pour tous les blocs */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Ombre uniforme pour tous les blocs */
+    overflow: hidden; /* Assure que les floats sont contenus */
+    clear: both; /* S'assure que les blocs se comportent bien avec les floats précédents */
+}
+
+/* --- Styles spécifiques au bloc "Une Colonne" --- */
+.template-1colonne {
+    /* max-width: 900px;  Décommenter si vous voulez qu'il soit plus étroit que les autres blocs */
+}
+
+.template-1colonne h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 2em;
+    text-align: center;
+}
+
+.template-1colonne p {
+    color: #666;
+    line-height: 1.8;
+}
+
+
+/* ==================================================================== */
+/* --- Styles spécifiques au bloc "Deux Colonnes" --- */
+/* ==================================================================== */
+.template-2colonnes {
+    /* Hérite de .template-bloc-commun */
+}
+
+.template-2colonnes .column-wrapper {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.template-2colonnes .column-left,
+.template-2colonnes .column-right {
+    flex: 1 1 calc(50% - 20px); /* Deux colonnes de 50% ajustées pour le gap */
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    background-color: #f9f9f9;
+}
+
+.template-2colonnes h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+}
+
+.template-2colonnes h3 {
+    color: #3498db;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.6em;
+}
+
+.template-2colonnes p {
+    color: #666;
+    line-height: 1.8;
+}
+
+
+/* ==================================================================== */
+/* --- Styles spécifiques au bloc "Trois Colonnes" --- */
+/* ==================================================================== */
+.template-3colonnes {
+    /* Hérite de .template-bloc-commun */
+}
+
+.template-3colonnes .column-wrapper {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.template-3colonnes .column { /* Classe générique pour les colonnes du bloc 3 colonnes */
+    flex: 1 1 calc(33.33% - 20px); /* Trois colonnes de 33.33% ajustées pour le gap */
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    background-color: #f9f9f9;
+}
+
+.template-3colonnes h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+}
+
+.template-3colonnes h3 {
+    color: #3498db;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.6em;
+}
+
+.template-3colonnes p {
+    color: #666;
+    line-height: 1.8;
+}
+
+/* ==================================================================== */
+/* --- Styles spécifiques au bloc "Quatre Colonnes" --- */
+/* ==================================================================== */
+.template-4colonnes {
+    /* Hérite de .template-bloc-commun */
+}
+
+.template-4colonnes .column-wrapper {
+    display: flex;
+    gap: 20px; /* Un espacement légèrement réduit pour quatre colonnes */
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.template-4colonnes .column {
+    flex: 1 1 calc(25% - 15px); /* Quatre colonnes de 25% ajustées pour le gap */
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    background-color: #f9f9f9;
+}
+
+.template-4colonnes h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+}
+
+.template-4colonnes h3 {
+    color: #3498db;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.6em;
+}
+
+.template-4colonnes p {
+    color: #666;
+    line-height: 1.8;
+}
+
+
+/* ==================================================================== */
+/* --- Responsivité : Bascule Desktop -> Tablette/Mobile (à 992px) --- */
+/* Toutes les colonnes (2, 3 et maintenant 4) s'empilent en une seule colonne */
+/* ==================================================================== */
+@media (max-width: 992px) {
+    /* Styles pour le bloc Deux Colonnes, Trois Colonnes et Quatre Colonnes lorsqu'ils s'empilent */
+    .template-2colonnes .column-wrapper,
+    .template-3colonnes .column-wrapper,
+    .template-4colonnes .column-wrapper { /* Ajout de .template-4colonnes */
+        flex-direction: column; /* Les colonnes s'empilent */
+        gap: 20px; /* Espacement réduit entre les colonnes empilées */
+    }
+    .template-2colonnes .column-left,
+    .template-2colonnes .column-right,
+    .template-3colonnes .column,
+    .template-4colonnes .column { /* Ajout de .template-4colonnes .column */
+        min-width: unset; /* Retire la largeur minimale pour permettre l'empilement */
+        padding: 15px; /* Ajuste le padding des colonnes */
+    }
+    /* Ajustements de taille de texte pour les titres dans les colonnes */
+    .template-2colonnes h2, .template-3colonnes h2, .template-4colonnes h2 {
+        font-size: 1.8em;
+    }
+    .template-2colonnes h3, .template-3colonnes h3, .template-4colonnes h3 {
+        font-size: 1.4em;
+    }
+}
+
+
+/* ==================================================================== */
+/* --- Responsivité Générale pour les Très Petits Écrans (480px et moins) --- */
+/* ==================================================================== */
+@media (max-width: 480px) {
+    .template-bloc-commun {
+        padding: 20px; /* Réduit le padding sur les très petits écrans pour tous les blocs */
+    }
+
+    .intro-section {
+        padding: 1.5em;
+    }
+}

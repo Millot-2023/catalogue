@@ -1,0 +1,10 @@
+body {
+    background-color: blue; /* Un fond bleu très visible ! */
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding-top: 50px;
+}
+h1 {
+    color: yellow;
+}

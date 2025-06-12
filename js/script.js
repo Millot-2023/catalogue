@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log("Articles : Article ajouté avec succès. Appel de fetchArticles()."); // TRACE 11
                         // Si nous sommes sur admin-articles, rafraîchir la liste
                         if (document.getElementById('articlesTableBody')) {
-                           fetchArticles();
+                            fetchArticles();
                         }
                     } else { // C'est une mise à jour
                         console.log("Articles : Article mis à jour avec succès. Redirection vers l'administration.");
@@ -239,9 +239,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 const categorieAffiche = article.categorie || 'Non spécifiée';
                                 const datePublicationAffiche = article.date_publication || 'Date non spécifiée';
 
+                                // ****** C'EST LA CORRECTION ICI : LE H2 QUI CAUSAIT LE DUBLON EST SUPPRIMÉ *******
                                 targetElement.innerHTML = `
-                                    <h2>${article.titre || 'Titre non disponible'}</h2>
-                                    <img src="${article.image_url || 'placeholder.jpg'}" alt="Image de l'article : ${article.titre || 'Non disponible'}" style="max-width: 100%; height: auto; margin-bottom: 20px;">
+                                    <figure class="article-image-figure">
+                                        <img src="${article.image_url || 'placeholder.jpg'}" alt="Image de l'article : ${article.titre || 'Non disponible'}">
+                                        <figcaption>${article.titre || 'Image de l\'article'}</figcaption>
+                                    </figure>
                                     <p><strong>Résumé :</strong> ${article.resume || 'Résumé non disponible'}</p>
                                     <div>
                                         <h3>Contenu Complet :</h3>
@@ -250,6 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <p>Catégorie : ${categorieAffiche}</p>
                                     <p>Date de publication : ${datePublicationAffiche}</p>
                                 `;
+                                // ***********************************************************************************
                             }
                             if (messageAreaSpecific) messageAreaSpecific.textContent = ''; // Clear loading message
                         }
@@ -278,8 +282,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isEditPage) populateEditForm({}); // Vider les champs du formulaire d'édition
         }
     }
-
-
     async function fetchArticles() {
         console.log("fetchArticles() : Fonction appelée."); // TRACE 13
         let targetContainer;
