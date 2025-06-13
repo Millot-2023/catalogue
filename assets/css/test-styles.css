@@ -1,0 +1,281 @@
+/******************************************/
+/* --- STYLES SPÉCIFIQUES POUR LA PAGE ADMIN-ARTICLES.PHP --- */
+
+/* Conteneur principal de la page */
+.main-content-wrapper {
+    padding: 20px; /* Adaptez selon votre espacement général */
+    max-width: 1200px; /* Adaptez si votre site a une largeur maximale différente */
+    margin: 20px auto 0; /* CHANGÉ : margin-bottom mis à 0 */
+    background-color: #f9f9f9; /* Couleur de fond légère pour le contenu principal */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+h1, h2 {
+    color: #333; /* Adaptez à votre couleur de titre principale */
+    text-align: center;
+    margin-bottom: 25px;
+    font-family: 'Roboto', sans-serif; /* Adaptez à votre police de titre */
+}
+
+h1 {
+    font-size: 2.5em; /* Adaptez la taille du titre principal */
+    color: #28a745; /* CHANGÉ : Couleur d'accent principale en vert */
+}
+
+h2 {
+    font-size: 1.8em; /* Adaptez la taille des sous-titres */
+    margin-top: 40px;
+    border-bottom: 2px solid #eee; /* Petite séparation visuelle */
+    padding-bottom: 10px;
+}
+
+/* Formulaires (Ajout et Modification) */
+form {
+    background-color: #f0f4f8; /* Légèrement teinté, une teinte de bleu/gris très clair */
+    padding: 30px;
+    border-radius: 10px; /* Bordures un peu plus arrondies */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Ombre plus prononcée */
+    margin: 40px auto; /* Centre le formulaire et donne de l'espace */
+    max-width: 700px; /* Limite la largeur du formulaire pour le centrer */
+    display: grid;
+    gap: 20px; /* Plus d'espace entre les champs */
+    grid-template-columns: 1fr;
+    border: 1px solid #e0e0e0; /* Légère bordure */
+}
+
+@media (min-width: 768px) {
+    form {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    form div:last-of-type { /* Contenu complet prend toute la largeur */
+        grid-column: 1 / -1;
+    }
+    form button[type="submit"] {
+        grid-column: 1 / -1; /* Le bouton prend toute la largeur en bas */
+    }
+}
+
+form div {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 8px;
+    font-weight: 600; /* Un peu plus gras */
+    color: #444; /* Couleur de texte un peu plus foncée */
+    font-size: 0.95em;
+}
+
+input[type="text"],
+input[type="url"],
+input[type="date"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc; /* Bordure légèrement plus visible */
+    border-radius: 6px; /* Bords légèrement arrondis */
+    font-size: 1em;
+    box-sizing: border-box; /* Inclut le padding dans la largeur totale */
+    font-family: 'Roboto', sans-serif;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #ffffff; /* Fond blanc pour les champs */
+}
+
+input[type="text"]:focus,
+input[type="url"]:focus,
+input[type="date"]:focus,
+textarea:focus {
+    border-color: #28a745; /* CHANGÉ : Couleur de focus en vert */
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25); /* CHANGÉ : Ombre légère au focus en vert */
+    outline: none;
+}
+
+textarea {
+    resize: vertical; /* Permet le redimensionnement vertical */
+    min-height: 100px; /* Augmenter un peu la hauteur minimale */
+}
+
+button[type="submit"],
+.edit-btn,
+.delete-btn,
+#closeEditModal {
+    background-color: #28a745; /* CHANGÉ : Couleur principale des boutons en vert */
+    color: white;
+    padding: 14px 25px; /* Padding plus généreux */
+    border: none;
+    border-radius: 8px; /* Bords plus arrondis */
+    cursor: pointer;
+    font-size: 1.1em; /* Texte un peu plus grand */
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    margin-top: 15px; /* Espace au-dessus des boutons */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15); /* Ombre pour les boutons */
+}
+
+button[type="submit"]:hover,
+.edit-btn:hover,
+.delete-btn:hover,
+#closeEditModal:hover {
+    background-color: #218838; /* CHANGÉ : Couleur plus foncée au survol en vert */
+    transform: translateY(-3px); /* Effet de soulèvement plus prononcé */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Ombre plus prononcée au survol */
+}
+
+.delete-btn {
+    background-color: #dc3545; /* Couleur rouge pour le bouton de suppression (laissé tel quel) */
+    margin-left: 10px;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* Liste des articles existants */
+#articlesList {
+    margin-top: 30px;
+}
+
+.article-item {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start; /* Aligne les éléments au début (haut) */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    width: 100%; /* Force l'élément de liste à prendre toute la largeur disponible de son parent */
+    gap: 20px; /* Ajoute de l'espace entre l'image, le conteneur info et le conteneur boutons */
+    box-sizing: border-box; /* S'assure que padding est inclus dans la largeur totale */
+    
+    justify-content: space-between; /* Distribue l'espace entre les éléments flex */
+}
+
+.article-item img {
+    width: 120px !important;    /* Force la largeur à 120px */
+    height: 100px !important;   /* Force la hauteur à 100px */
+    object-fit: cover;
+    border-radius: 5px;
+    flex-shrink: 0;
+}
+
+/* Correction ici : Rend la div .article-info elle-même un conteneur flex vertical */
+.article-item .article-info {
+    display: flex;          /* Active le flexbox pour les éléments de texte */
+    flex-wrap: wrap;        /* Permet aux éléments de passer à la ligne si l'espace est insuffisant */
+    align-items: baseline;  /* Aligne les éléments sur leur ligne de base pour un alignement propre */
+    gap: 5px 10px;          /* Ajoute un petit espace entre les éléments (vertical et horizontal) */
+    flex-grow: 1;           /* Permet à ce bloc de prendre l'espace disponible */
+    min-width: 0;           /* Très important : Permet au contenu de s'enrouler (wrapping) */
+
+
+justify-content: space-around;/*REGLE IMPORTANTE CHRISTOPHE*/
+    
+}
+/* Cible la div qui contient les boutons "Modifier" et "Supprimer" */
+.article-item .article-actions { 
+    display: flex;
+    flex-direction: column; /* Empile les boutons verticalement */
+    gap: 10px; /* Espace entre les boutons */
+    flex-shrink: 0; /* Empêche ce conteneur de se réduire */
+    align-items: flex-end; /* Aligne les boutons à droite dans leur conteneur */
+}
+
+
+.article-item h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 1.3em;
+    color: #28a745;
+    text-align: left;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.article-item p {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.article-item .edit-btn,
+.article-item .delete-btn {
+    padding: 8px 15px;
+    font-size: 0.9em;
+    margin-top: 0;
+    width: auto;
+}
+
+/* Cette règle était pour un <hr> qui a été retiré de l'HTML des articles.
+   Elle est commentée car elle n'est plus pertinente pour la structure actuelle des articles. */
+/*
+.article-item hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 60px auto;
+    width: 80%;
+    max-width: 800px;
+    box-sizing: content-box;
+}
+*/
+
+
+/* Modale d'édition */
+#editModal {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#editModal > div {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    max-width: 600px;
+    width: 90%;
+    position: relative;
+}
+
+#editModal h3 {
+    margin-top: 0;
+    color: #28a745;
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+#editArticleForm button {
+    margin-top: 20px;
+    margin-right: 10px;
+}
+
+#editArticleForm #closeEditModal {
+    background-color: #6c757d;
+}
+
+#editArticleForm #closeEditModal:hover {
+    background-color: #5a6268;
+}
+
+.form-message {
+    color: #d9534f;
+    font-weight: bold;
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* Pour ajuster la marge du footer et supprimer l'espace bleu */
+.main-footer, footer {
+    margin-top: 0 !important;
+}
