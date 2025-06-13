@@ -6,8 +6,11 @@
     <title>Catalogue</title>
     <meta name="description" content="Découvrez le catalogue de mes réalisations graphiques et mes projets de développement web. Portfolio de Christophe MILLOT.">
 
-    <link rel="stylesheet" href="/catalogue/css/styles.css">
-    <link rel="stylesheet" href="/catalogue/css/styles-details-v2.css"> <link rel="stylesheet" href="/catalogue/css/test-styles.css">    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="/catalogue/assets/css/styles.css">
+<link rel="stylesheet" href="/catalogue/assets/css/styles-details-v2.css">
+<link rel="stylesheet" href="/catalogue/assets/css/test-styles.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
@@ -24,7 +27,7 @@
                     <li><a href="/catalogue/index.php">Accueil</a></li>
                     <li><a href="/catalogue/articles.php">Articles</a></li>
                     <li><a href="#">Recherches</a></li>
-                    <li><a href="/catalogue/admin-articles.php">Admin</a></li>
+                    <li><a href="/catalogue/admin/admin-articles.php">Admin</a></li>
                 </ul>
                 <button class="nav-toggle" aria-label="Toggle navigation">
                     <span class="hamburger"></span>

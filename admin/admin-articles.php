@@ -1,4 +1,12 @@
-<?php include 'includes/header.php'; ?>
+<?php 
+// Active l'affichage de toutes les erreurs PHP pour le débogage. À retirer en production.
+error_reporting(E_ALL); 
+ini_set('display_errors', 1); 
+
+// Inclusion du header. Le '..' est crucial car admin-articles.php est maintenant dans le dossier 'admin/'.
+// Il doit "remonter" d'un niveau pour trouver le dossier 'includes/' à la racine de 'catalogue/'.
+include '../includes/header.php'; 
+?>
 
     <h1>Gestion des Articles</h1>
 
@@ -66,11 +74,13 @@
     </div>
 
     <script>
-        // --- Chemins vers les scripts PHP (CORRIGÉS) ---
-        const GET_ARTICLES_URL = 'backend/get_articles.php';
-        const ADD_ARTICLE_URL = 'backend/add_article.php';
-        const UPDATE_ARTICLE_URL = 'backend/update_article.php';
-        const DELETE_ARTICLE_URL = 'backend/delete_article.php';
+        // --- Chemins vers les scripts PHP (CORRIGÉS pour dossier 'admin/') ---
+        // Le '..' est nécessaire car admin-articles.php est dans 'admin/', 
+        // et les scripts backend/ sont à la racine de 'catalogue/'.
+        const GET_ARTICLES_URL = '../backend/get_articles.php';
+        const ADD_ARTICLE_URL = '../backend/add_article.php';
+        const UPDATE_ARTICLE_URL = '../backend/update_article.php';
+        const DELETE_ARTICLE_URL = '../backend/delete_article.php';
         // --- FIN DES CHEMINS CORRIGÉS ---
 
         const addArticleForm = document.getElementById('addArticleForm');
@@ -88,19 +98,17 @@
                 if (!response.ok) {
                     throw new Error(`Erreur HTTP: ${response.status}`);
                 }
-                const data = await response.json(); // Renommé 'data' pour éviter la confusion avec 'articles' de la réponse PHP
+                const data = await response.json(); 
 
-                // CORRECTION MAJEURE ICI : utiliser data.articles partout
                 if (data.success && Array.isArray(data.articles)) {
-                    articlesListDiv.innerHTML = ''; // Efface le message de chargement
+                    articlesListDiv.innerHTML = ''; 
                     if (data.articles.length === 0) {
                         articlesListDiv.innerHTML = '<p>Aucun article trouvé. Ajoutez-en un nouveau !</p>';
                         return;
                     }
                     data.articles.forEach(article => {
                         const articleDiv = document.createElement('div');
-                        articleDiv.className = 'article-item'; // Simple classe pour identifier
-                        // DÉBUT DE LA MODIFICATION CRUCIALE DE LA STRUCTURE HTML DE L'ARTICLE
+                        articleDiv.className = 'article-item'; 
                         articleDiv.innerHTML = `
                             <img src="${article.image_url}" alt="${article.titre || 'Image d\'article'}" style="max-width:100px; height:auto;">
                             
@@ -110,16 +118,15 @@
                             </div>
 
                             <div class="article-actions"> <button class="edit-btn" 
-                                        data-id="${article.id}" 
-                                        data-titre="${article.titre}" 
-                                        data-imageurl="${article.image_url}" 
-                                        data-datepublication="${article.date_publication}" 
-                                        data-resume="${article.resume}" 
-                                        data-contenucomplet="${article.contenu_complet}">Modifier</button>
+                                            data-id="${article.id}" 
+                                            data-titre="${article.titre}" 
+                                            data-imageurl="${article.image_url}" 
+                                            data-datepublication="${article.date_publication}" 
+                                            data-resume="${article.resume}" 
+                                            data-contenucomplet="${article.contenu_complet}">Modifier</button>
                                 <button class="delete-btn" data-id="${article.id}">Supprimer</button>
                             </div>
                             `;
-                        // FIN DE LA MODIFICATION CRUCIALE DE LA STRUCTURE HTML DE L'ARTICLE
                         articlesListDiv.appendChild(articleDiv);
                     });
                     attachEventListeners();
@@ -260,4 +267,4 @@
         // Charger les articles au chargement de la page
         document.addEventListener('DOMContentLoaded', loadArticles);
     </script>
-<?php include 'includes/footer.php'; ?>
+<?php include '../includes/footer.php'; ?>
