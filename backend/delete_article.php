@@ -1,90 +1,56 @@
 <?php
-// Active l'affichage des erreurs pour le débogage (à désactiver en production)
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// --- DÉBUT DES EN-TÊTES CORS ---
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE"); // Ajout de DELETE pour les suppressions
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Max-Age: 3600");
-
-// Gère la requête OPTIONS (Preflight request) - à laisser pour les requêtes modernes (frontend)
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit();
-}
-// --- FIN DES EN-TÊTES CORS ---
-
-// Définit le type de contenu de la réponse comme JSON
 header('Content-Type: application/json');
 
-// --- DÉBUT DE LA GESTION DE LA CONFIGURATION DE LA BASE DE DONNÉES ---
-// Détermination de l'environnement (local ou production)
-$config_file = 'db_config.local.php'; // Par défaut, environnement local
+// Inclure le fichier de connexion à la base de données
+// Assurez-vous que db_connect.php initialise bien une variable $pdo pour PDO
+require_once 'db_connect.php';
 
-// Vérifie si l'hôte du serveur n'est PAS 'localhost' ou '127.0.0.1' (environnements locaux)
-if (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] !== 'localhost' && $_SERVER['SERVER_NAME'] !== '127.0.0.1') {
-    $config_file = 'db_config.prod.php'; // Si ce n'est pas local, c'est la production
-}
+// Les lignes error_log vont écrire dans le fichier de log de PHP (php_error.log ou error.log)
+// Ces logs ne sont pas envoyés directement au navigateur, ils sont pour le débogage côté serveur.
 
-// Inclut le fichier de configuration approprié
-// C'est dans ce fichier (db_config.local.php) que la fonction getDbConnection() DOIT être définie.
-require_once __DIR__ . '/' . $config_file;
-// --- FIN DE LA GESTION DE LA CONFIGURATION DE LA BASE DE DONNÉES ---
+// Récupérer les données brutes de la requête
+$input = file_get_contents('php://input');
+$data = json_decode($input, true);
 
-$response = ['success' => false, 'message' => ''];
+error_log("DELETE_ARTICLE_PHP: Requête de suppression reçue. Contenu brut: " . $input);
+error_log("DELETE_ARTICLE_PHP: Données décodées: " . print_r($data, true));
 
-$id = null; // Initialiser l'ID à null
-
-// Récupérer l'ID de l'article à supprimer
-// Ce script peut recevoir l'ID via POST (formulaire), DELETE/PUT (JSON), ou GET (URL) pour plus de flexibilité.
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Cas où l'ID est envoyé via un formulaire POST standard
-    $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
-} elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE' || $_SERVER['REQUEST_METHOD'] === 'PUT') {
-    // Cas où l'ID est envoyé dans le corps JSON pour une requête DELETE ou PUT (plus moderne pour les API REST)
-    $input = file_get_contents('php://input');
-    $data = json_decode($input, true);
-    if (json_last_error() === JSON_ERROR_NONE && isset($data['id'])) {
-        $id = filter_var($data['id'], FILTER_VALIDATE_INT);
-    }
-} elseif (isset($_GET['id'])) {
-    // Cas où l'ID est envoyé via l'URL (GET), moins recommandé pour DELETE mais utile pour un test simple direct dans le navigateur
-    $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-}
-
-
-// --- DÉBUT DE LA LOGIQUE DE SUPPRESSION ---
-if ($id) {
-    try {
-        // Appelle la fonction getDbConnection() qui DOIT être définie dans db_config.local.php
-        $pdo = getDbConnection(); 
-
-        $stmt = $pdo->prepare("DELETE FROM articles WHERE id = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            if ($stmt->rowCount() > 0) {
-                $response['success'] = true;
-                $response['message'] = "Article ID $id supprimé avec succès.";
-            } else {
-                $response['message'] = "Aucun article trouvé avec l'ID $id.";
-            }
-        } else {
-            $response['message'] = "Erreur lors de l'exécution de la suppression dans la base de données.";
-        }
-    } catch (PDOException $e) {
-        $response['message'] = "Erreur de base de données: " . $e->getMessage();
-        error_log("DB Error in delete_article.php: " . $e->getMessage());
-    } catch (Exception $e) {
-        $response['message'] = "Erreur interne du serveur: " . $e->getMessage();
-        error_log("General Error in delete_article.php: " . $e->getMessage());
-    }
+if (isset($data['id']) && !empty($data['id'])) {
+    $article_id = intval($data['id']); // Convertir en entier immédiatement pour la sécurité
+    error_log("DELETE_ARTICLE_PHP: ID d'article reçu: " . $article_id);
 } else {
-    $response['message'] = "ID d'article manquant ou invalide.";
+    error_log("DELETE_ARTICLE_PHP: Erreur: ID d'article manquant ou vide dans les données reçues.");
+    echo json_encode(['success' => false, 'message' => 'ID d\'article manquant ou invalide.']);
+    exit();
 }
-// --- FIN DE LA LOGIQUE DE SUPPRESSION ---
 
-echo json_encode($response);
+// Vérifier si l'ID est valide après conversion
+if ($article_id <= 0) {
+    error_log("DELETE_ARTICLE_PHP: ID d'article invalide après conversion: " . $article_id);
+    echo json_encode(['success' => false, 'message' => 'ID d\'article invalide.']);
+    exit();
+}
+
+try {
+    // Utilisation de PDO : $pdo est la variable de connexion de db_connect.php
+    $stmt = $pdo->prepare("DELETE FROM articles WHERE id = :id");
+    $stmt->bindParam(':id', $article_id, PDO::PARAM_INT); // PDO::PARAM_INT pour les entiers
+    $stmt->execute();
+
+    // rowCount() avec PDO pour vérifier le nombre de lignes affectées
+    if ($stmt->rowCount() > 0) {
+        echo json_encode(['success' => true, 'message' => 'Article supprimé avec succès.']);
+        error_log("DELETE_ARTICLE_PHP: Article ID " . $article_id . " supprimé avec succès.");
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Aucun article trouvé avec cet ID ou suppression échouée.']);
+        error_log("DELETE_ARTICLE_PHP: Aucun article trouvé avec ID " . $article_id . " ou suppression échouée.");
+    }
+} catch (PDOException $e) {
+    // Gérer les erreurs PDO
+    error_log("DELETE_ARTICLE_PHP: Erreur de base de données (PDOException): " . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Erreur de base de données lors de la suppression: ' . $e->getMessage()]);
+}
+
+// La connexion PDO n'a pas besoin d'être fermée explicitement, PHP la gérera à la fin du script.
+// $pdo = null; // Optionnel, mais pas nécessaire en fin de script
 ?>

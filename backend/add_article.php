@@ -27,26 +27,12 @@ try {
     exit();
 }
 
+// *** C'EST LA LIGNE CLÉ À DÉCOMMENTER (et retirer les données de test) ***
 // Récupérer les données POST (en JSON)
-//$data = json_decode(file_get_contents("php://input"), true);
-
-
-// Récupérer les données POST (en JSON) - COMMENTEZ OU SUPPRIMEZ CETTE LIGNE
-// $data = json_decode(file_get_contents("php://input"), true);
-
-// Données de test temporaires pour simuler une requête POST JSON
-$data = [
-    'titre' => 'Mon article de test direct',
-    'imageUrl' => 'images/direct_test.jpg',
-    'datePublication' => '2025-06-12', // Assurez-vous que la date est au format YYYY-MM-DD
-    'resume' => 'Résumé pour le test direct.',
-    'contenuComplet' => 'Contenu complet pour le test direct.'
-];
-
-
-
+$data = json_decode(file_get_contents("php://input"), true);
 
 // Assigner les données aux variables, avec des valeurs par défaut si non présentes
+// Utilisez l'opérateur de coalescence nulle (??) pour éviter les erreurs si une clé est manquante
 $titre = $data['titre'] ?? '';
 $imageUrl = $data['imageUrl'] ?? '';
 $datePublication = $data['datePublication'] ?? '';
