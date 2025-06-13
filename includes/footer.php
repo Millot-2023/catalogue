@@ -7,6 +7,6 @@
             </ul>
         </div>
     </footer>
-    <script src="/catalogue/js/script.js" defer></script>
+<script src="/catalogue/assets/js/script.js"></script>
 </body>
 </html>
