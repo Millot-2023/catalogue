@@ -6,10 +6,7 @@
     <title>Catalogue</title>
     <meta name="description" content="Découvrez le catalogue de mes réalisations graphiques et mes projets de développement web. Portfolio de Christophe MILLOT.">
 
-<link rel="stylesheet" href="/catalogue/assets/css/styles.css">
-<link rel="stylesheet" href="/catalogue/assets/css/styles-details-v2.css">
-<link rel="stylesheet" href="/catalogue/assets/css/test-styles.css">
-
+    <link rel="stylesheet" href="/catalogue/assets/css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">

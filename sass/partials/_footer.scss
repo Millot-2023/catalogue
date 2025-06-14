@@ -3,53 +3,53 @@
 // Styles pour le pied de page
 // ==============================
 .main-footer {
-  background-color: darken($primary-color, 15%);
-  color: $white;
-  padding: 20px;
-  text-align: center;
-  margin-top: 40px;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    background-color: color.adjust($primary-color, $lightness: -15%); // <-- CORRIGÉ ICI
+    color: $white;
+    padding: 20px;
+    text-align: center;
+    margin-top: 40px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 
-  .footer-content {
-    max-width: 960px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-
-    p {
-      margin: 0;
-      font-size: 0.9em;
-    }
-
-    .footer-content .footer-links {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-
-      li {
-        a {
-          color: $white;
-          text-decoration: none;
-          font-size: 0.9em;
-          transition: color 0.3s ease-in-out;
-
-          &:hover {
-            color: lighten($white, 10%);
-          }
-        }
-      }
-    }
-  }
-
-  @media (max-width: $breakpoint-mobile) {
     .footer-content {
-      // Les styles par défaut de flex-direction: column; et align-items: center; sont déjà bons
+        max-width: 960px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+
+        p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        .footer-content .footer-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+
+            li {
+                a {
+                    color: $white;
+                    text-decoration: none;
+                    font-size: 0.9em;
+                    transition: color 0.3s ease-in-out;
+
+                    &:hover {
+                        color: color.adjust($white, $lightness: 10%); // <-- CORRIGÉ ICI
+                    }
+                }
+            }
+        }
     }
-  }
+
+    @media (max-width: $breakpoint-mobile) {
+        .footer-content {
+            // Les styles par défaut de flex-direction: column; et align-items: center; sont déjà bons
+        }
+    }
 }

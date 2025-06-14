@@ -86,7 +86,7 @@
         border-left: 5px solid $primary-color;
         padding: 15px 20px;
         margin: 30px 0;
-        background-color: lighten($background-color, 3%);
+        background-color: color.adjust($background-color, $lightness: 3%); // <-- CORRIGÉ ICI
         font-style: italic;
         color: $text-color;
         p {
@@ -133,11 +133,6 @@
     }
 }
 
-
-
-
-
-
 /* --- Style spécifique pour Le Prompt Parfait ! --- */
 .didactic-prompt {
     background-color: #f5f5f5;
@@ -165,7 +160,7 @@
         margin-bottom: 5px; // Espacement entre les éléments de liste
     }
     strong {
-        color: darken($primary-color, 10%); // Assombrit la couleur primaire pour le texte fort
+        color: color.adjust($primary-color, $lightness: -10%); // <-- CORRIGÉ ICI
     }
     code {
         background-color: #eee;

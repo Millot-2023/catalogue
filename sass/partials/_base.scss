@@ -1,3 +1,4 @@
+@use "sass:color"; // Importe le module de couleur de Sass
 // ==============================
 // _base.scss
 // Styles de base et utilitaires globaux
@@ -31,14 +32,14 @@ body {
 
 // Styles de base pour les liens
 a {
-    color: $primary-color;
+    color:white;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 a:hover {
-    color: darken($primary-color, 15%);
-}
+    /*color:white;*/
+    }
 
 // Styles de base pour les listes
 ul {

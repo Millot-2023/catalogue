@@ -38,7 +38,7 @@
         transition: background-color 0.3s ease, border-radius 0.3s ease;
 
         &:hover {
-            background-color: lighten($primary-color, 10%);
+            background-color: color.adjust($primary-color, $lightness: 10%); // <-- CORRIGÉ ICI
             border-radius: 5px;
         }
 
@@ -55,7 +55,7 @@
             background-color: transparent;
 
             &:hover {
-                color: darken($white, 10%);
+                color: color.adjust($white, $lightness: -10%); // <-- CORRIGÉ ICI
             }
         }
     }
@@ -72,7 +72,7 @@
     transition: background-color 0.3s ease;
 
     &:hover {
-        background-color: lighten($primary-color, 10%);
+        background-color: color.adjust($primary-color, $lightness: 10%); // <-- CORRIGÉ ICI
     }
 
     .hamburger {
@@ -133,7 +133,7 @@
             align-items: stretch; // Pour que le lien prenne toute la hauteur du li
 
             &:hover {
-                background-color: darken($primary-color, 5%);
+                background-color: color.adjust($primary-color, $lightness: -5%); // <-- CORRIGÉ ICI
                 border-radius: 0;
             }
 
@@ -152,7 +152,7 @@
                 background-color: transparent;
 
                 &:hover {
-                    color: $white;
+                    color: $white; // Cette ligne n'avait pas de darken/lighten, donc pas de changement.
                 }
             }
         }

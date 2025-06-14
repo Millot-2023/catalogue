@@ -1,43 +1,58 @@
-// Dans votre fichier Sass (ex: src/partials/_buttons.scss)
+// ==============================
+// _buttons.scss
+// Styles pour les boutons génériques et spécifiques
+// ==============================
 
-// Dans src/partials/_buttons.scss
-
-// Dans src/partials/_buttons.scss
-
-// Dans src/partials/_buttons.scss
-
-// Dans src/partials/_buttons.scss
+// N'oubliez pas d'importer le module color si ce n'est pas déjà fait ailleurs dans votre fichier principal (styles.scss) ou dans un fichier de variables partagé.
+// @use "sass:color"; // Assurez-vous que cette ligne est présente au début de votre fichier principal styles.scss si vous n'avez pas de fichier de variables global.
 
 .button {
-    display: inline-block; /* C'est CRUCIAL. Assurez-vous que c'est bien PRÉSENT. */
-
+    display: inline-block;
     background-color: #2ecc71; /* Votre couleur primaire verte */
-    color: white;             /* Texte blanc pour la lisibilité */
-
-    padding: 12px 25px;       /* Ajustez ces valeurs pour la taille désirée */
-    font-size: 1em;           /* Ajustez la taille de la police */
+    color: white;
+    padding: 12px 25px;
+    font-size: 1em;
     border: none;
     border-radius: 5px;
-    text-decoration: none;    /* Supprime le soulignement des liens */
+    text-decoration: none;
     font-weight: bold;
     cursor: pointer;
-
-    transition: background-color 0.3s ease; /* Seulement la transition de couleur */
+    transition: background-color 0.3s ease;
 
     &:hover {
-        background-color: #27ae60;
-        // Supprimez ou commentez la ligne transform: translateY(-2px); si elle est là
+        background-color: color.adjust(#2ecc71, $lightness: 10%); // ÉCLAIRCIT la couleur au survol
+     color: white;
     }
     &:active {
-        background-color: #1abc9c;
+        background-color: color.adjust(#2ecc71, $lightness: -10%); // Assombrit la couleur au clic pour un effet d'enfoncement
         transform: translateY(0);
     }
 }
 
-// ... le reste de votre _buttons.scss
+/* ------------------------------------ */
+/* Styles pour les boutons spécifiques (comme .btn-primary dans l'admin) */
+/* ------------------------------------ */
 
-// ... le reste de votre code _buttons.scss
+.btn-primary {
+    display: inline-block;
+    padding: 8px 15px;
+    font-size: 0.9em;
+    background-color: #2ecc71; // Ou votre variable de couleur primaire (ex: $primary-button-color)
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 
-// ... le reste de votre code _buttons.scss
+    &:hover {
+        background-color: color.adjust(#2ecc71, $lightness: 10%); // ÉCLAIRCIT la couleur au survol
+        transform: translateY(-2px); // Garde l'effet de léger soulèvement
+    }
+    &:active {
+        background-color: color.adjust(#2ecc71, $lightness: -10%); // Assombrit la couleur au clic pour un effet d'enfoncement
+        transform: translateY(0);
+    }
+}
 
-// ... le reste de votre code _buttons.scss (comme .btn-primary, etc.)
+// Ajoutez ici d'autres styles de boutons si vous en avez (ex: .btn-secondary, etc.)

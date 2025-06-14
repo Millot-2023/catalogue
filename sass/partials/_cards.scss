@@ -3,6 +3,9 @@
 // Styles pour la grille d'articles et chaque carte d'article
 // ==============================
 
+// N'oubliez pas d'importer le module color si ce n'est pas déjà fait ailleurs dans votre fichier principal (styles.scss) ou dans un fichier de variables partagé.
+// @use "sass:color"; // Assurez-vous que cette ligne est présente au début de votre fichier principal styles.scss si vous n'avez pas de fichier de variables global.
+
 // Styles pour la section qui contient la grille d'articles
 .articles-list-section {
     padding: 20px;
@@ -87,34 +90,28 @@
     }
 
     // CONTENEUR POUR LE BOUTON : C'EST LA CLÉ POUR LE CENTRAGE !
-    // Si votre bouton est directement à la fin de .article-card, il faudra le wrapper
-    // Pour une meilleure organisation et un centrage facile du bouton.
     .card-button-wrapper {
-        // Applique text-align sur le parent de l'inline-block pour le centrer
         text-align: center;
-        margin-top: auto; // Pousse le wrapper vers le bas si la carte est un flex-column
-        padding: 0 15px; // Assure que le bouton n'est pas collé aux bords de la carte
+        margin-top: auto;
+        padding: 0 15px;
     }
 
-
     // Style pour le bouton "Lire la suite"
-    // C'est votre ancien .btn-primary, adapté pour les cartes
-    // J'ai renommé cette classe pour éviter les conflits si vous avez un .btn-primary global différent.
-    // Il faudra mettre la classe "read-more-btn" sur vos liens "Lire la suite" dans articles.html
     .read-more-btn {
-        display: inline-block; // Permet au bouton de s'adapter à son contenu
+        display: inline-block;
         background-color: $primary-color;
-        color: $white;
-        padding: 8px 15px; // Taille ajustée pour les cartes (plus petit)
+        color: white;
+        padding: 8px 15px;
         border-radius: 5px;
         text-decoration: none;
-        font-size: 0.9em; // Ajuste la taille de la police du bouton
-        font-weight: bold; // Pour le texte en gras
+        font-size: 0.9em;
+        font-weight: bold;
         cursor: pointer;
         transition: background-color 0.3s ease;
 
         &:hover {
-            background-color: darken($primary-color, 10%);
+            background-color: color.adjust($primary-color, $lightness: 10%); // <--- CORRIGÉ ICI pour éclaircir
+            color: white;
         }
         // Pas besoin de &:active ici à moins d'une interaction spécifique
     }
