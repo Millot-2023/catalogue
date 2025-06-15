@@ -5,13 +5,8 @@
 // Styles pour le contenu principal générique et simple
 // ==============================
 
-// Styles pour le conteneur principal de contenu (main)
-.main-content-wrapper {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 0 20px; // Gère l'espacement latéral.
-    box-sizing: border-box;
-}
+// J'AI SUPPRIMÉ LE BLOC .main-content-wrapper D'ICI.
+// Il doit être défini UNIQUEMENT dans _base.scss pour éviter les surcharges.
 
 // Styles pour les sections de contenu générales
 .content-section {
@@ -86,7 +81,7 @@
         border-left: 5px solid $primary-color;
         padding: 15px 20px;
         margin: 30px 0;
-        background-color: color.adjust($background-color, $lightness: 3%); // <-- CORRIGÉ ICI
+        background-color: color.adjust($background-color, $lightness: 3%);
         font-style: italic;
         color: $text-color;
         p {
@@ -160,7 +155,7 @@
         margin-bottom: 5px; // Espacement entre les éléments de liste
     }
     strong {
-        color: color.adjust($primary-color, $lightness: -10%); // <-- CORRIGÉ ICI
+        color: color.adjust($primary-color, $lightness: -10%);
     }
     code {
         background-color: #eee;
@@ -196,10 +191,8 @@
 /* ===================================== */
 
 @media (max-width: $breakpoint-mobile) {
-    // Ajustements pour le conteneur principal sur les petits écrans
-    .main-content-wrapper {
-        padding: 0 15px; // Réduit le padding latéral sur mobile
-    }
+    // J'AI SUPPRIMÉ LE BLOC .main-content-wrapper D'ICI.
+    // Il doit être défini UNIQUEMENT dans _base.scss pour éviter les surcharges.
 
     // Ajustements pour les sections de contenu générales sur les petits écrans
     .content-section {

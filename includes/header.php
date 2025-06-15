@@ -34,5 +34,3 @@
             </div>
         </nav>
     </header>
-
-    <!--<main class="main-content-wrapper">-->

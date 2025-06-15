@@ -57,7 +57,7 @@ html {
   overflow-x: hidden; /* Empêche le défilement horizontal indésirable */
   display: block; /* Garantit que html et body se comportent comme des blocs */
   scroll-behavior: smooth; /* Active le défilement doux pour les ancres */
-  scroll-padding-top: 80px; /* Ajuste le défilement pour les ancres en tenant compte du header fixe */
+  scroll-padding-top: 100px; /* Ajuste le défilement pour les ancres en tenant compte du header fixe */
 }
 
 body {
@@ -168,6 +168,17 @@ p {
   text-align: center;
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+/* AJOUT : Styles pour le conteneur de contenu principal */
+/* AJOUT : Styles pour le conteneur de contenu principal */
+.main-content-wrapper {
+  padding-top: 60px; /* Ajoute un espace au-dessus du contenu principal */
+  padding-bottom: 40px; /* Ajoute un espace en dessous du contenu principal */
+  max-width: 1200px; /* Centre le contenu et limite sa largeur */
+  margin: 0 auto;
+  padding-left: 20px; /* Gère le padding gauche pour les écrans plus petits */
+  padding-right: 20px; /* Gère le padding droit pour les écrans plus petits */
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -525,13 +536,6 @@ strong, b {
     font-size: 2em;
   }
 }
-.main-content-wrapper {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 20px;
-  box-sizing: border-box;
-}
-
 .content-section {
   margin: 30px 0;
   padding: 0;
@@ -685,9 +689,6 @@ strong, b {
 /* Media Queries Spécifiques à _content.scss */
 /* ===================================== */
 @media (max-width: 768px) {
-  .main-content-wrapper {
-    padding: 0 15px;
-  }
   .content-section {
     margin: 20px 0;
   }
