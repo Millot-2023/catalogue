@@ -35,4 +35,4 @@
         </nav>
     </header>
 
-    <main class="main-content-wrapper">
+    <!--<main class="main-content-wrapper">-->
