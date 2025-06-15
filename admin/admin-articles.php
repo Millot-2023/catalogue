@@ -38,14 +38,16 @@ include '../includes/header.php';
         </form>
     </section>
 
-    <hr class="section-separator"> 
+    <hr class="section-separator">
 
+<!--LISTE DES ARTICLES EXISTANTS-->
     <section class="admin-list-section">
         <h2>Liste des articles existants</h2>
         <div id="articlesList" class="articles-list">
             <p>Chargement des articles...</p>
         </div>
     </section>
+<!--/LISTE DES ARTICLES EXISTANTS-->
 
 <script>
     // --- Chemins vers les scripts PHP (CORRIGÉS pour dossier 'admin/') ---

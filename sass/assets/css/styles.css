@@ -451,9 +451,9 @@ strong, b {
   width: 100%;
   height: 100%;
   -o-object-fit: cover;
-     object-fit: cover;
+        object-fit: cover;
   -o-object-position: center;
-     object-position: center;
+        object-position: center;
   display: block;
   position: absolute;
   top: 0;
@@ -680,7 +680,7 @@ strong, b {
 }
 .hero-section.hero-articles .hero-image-container img, .hero-section.hero-articles .hero-image-container source {
   -o-object-fit: cover;
-     object-fit: cover;
+        object-fit: cover;
   width: 100%;
   height: 100%;
 }
@@ -768,10 +768,13 @@ strong, b {
 /* Styles pour les boutons spécifiques (comme .btn-primary dans l'admin) */
 /* ------------------------------------ */
 .btn-primary {
-  display: inline-block;
-  padding: 8px 15px;
-  font-size: 0.9em;
-  background-color: #2ecc71;
+  /* REMPLACER LES LIGNES SUIVANTES */
+  /* AJOUTER / MODIFIER CES LIGNES */
+  display: inline-block; /* Fait que le bouton ne prend que la largeur de son contenu */
+  padding: 8px 15px; /* Resserre le bouton (ajustez ces valeurs) */
+  font-size: 0.9em; /* Diminue la taille du texte (ajustez cette valeur) */
+  /* CONSERVEZ CES LIGNES (ou vos valeurs spécifiques) */
+  background-color: #2ecc71; /* Vert clair, ou votre couleur primaire actuelle */
   color: white;
   border: none;
   border-radius: 6px;
@@ -780,11 +783,11 @@ strong, b {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 .btn-primary:hover {
-  background-color: #54d98c;
+  background-color: #27ae60; /* Vert un peu plus foncé au survol */
   transform: translateY(-2px);
 }
 .btn-primary:active {
-  background-color: #25a25a;
+  background-color: #1abc9c; /* Vert légèrement différent au clic */
   transform: translateY(0);
 }
 
@@ -839,7 +842,7 @@ strong, b {
   width: 100%;
   height: 200px;
   -o-object-fit: cover;
-     object-fit: cover;
+        object-fit: cover;
   display: block;
   margin-bottom: 15px;
   border-bottom: 1px solid #eee;
@@ -1110,7 +1113,7 @@ strong, b {
   width: 60px; /* Largeur fixe pour les images */
   height: 45px; /* Hauteur fixe pour les images */
   -o-object-fit: cover;
-     object-fit: cover; /* Assure que l'image couvre l'espace sans déformation */
+        object-fit: cover; /* Assure que l'image couvre l'espace sans déformation */
   border-radius: 4px; /* Bords légèrement arrondis pour les images */
 }
 
@@ -1146,4 +1149,83 @@ strong, b {
   background-color: #bd2130;
 }
 
-/*C'est une bonne pratique de centraliser ce type de valeurs dans _variables.scss. Si light-gray (#f8f9fa) est très proche de #f9f9f9, ou si medium-gray (#dee2e6) ou une autre variable pourrait représenter #eee, vous pourriez les remplacer pour une meilleure maintenabilité. Mais ce n'est pas une erreur, juste une opportunité d'optimisation si vous le souhaitez.*//*# sourceMappingURL=styles.css.map */
+---
+
+/*Nouveaux Styles pour les Articles de l'Administration*/
+
+
+/* Styles spécifiques pour la liste d'articles dans la page d'administration */
+#articlesList { /* Cible le conteneur des articles générés par JS */
+    display: grid; /* Utilise CSS Grid pour la mise en page */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Crée une grille responsive */
+    gap: 25px; /* Espacement entre les articles */
+    max-width: 960px; /* Limite la largeur du conteneur, comme articles-grid */
+    margin: 40px auto; /* Centre le conteneur */
+    padding: 0 20px; /* Padding interne pour les petits écrans */
+}
+
+.article-item.admin-article-item { /* Cible les articles individuels dans l'admin */
+    background-color: #ffffff; /* Fond blanc */
+    border: 1px solid #ddd; /* Bordure fine */
+    border-radius: 8px; /* Bords arrondis */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre douce */
+    overflow: hidden; /* Cache le contenu qui dépasse (utile pour les images) */
+    text-align: left;
+    padding-bottom: 20px;
+    display: flex; /* Permet un alignement interne des éléments de l'article */
+    flex-direction: column; /* Organise le contenu en colonne */
+    justify-content: space-between; /* Espace le contenu (utile si les hauteurs varient) */
+    transition: transform 0.2s ease-in-out; /* Effet de transition au survol */
+}
+
+.article-item.admin-article-item:hover {
+    transform: translateY(-5px); /* Léger mouvement vers le haut au survol */
+}
+
+.article-item.admin-article-item img {
+    width: 100%;
+    height: 200px; /* Hauteur fixe pour les images */
+    object-fit: cover; /* Assure que l'image couvre l'espace */
+    display: block;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.article-item.admin-article-item .article-info {
+    padding: 0 15px; /* Padding pour le texte interne */
+}
+
+.article-item.admin-article-item h3 {
+    color: #28a745; /* Couleur du titre de l'article */
+    font-size: 1.4em;
+    margin: 10px 0; /* Ajuste la marge du titre */
+}
+
+.article-item.admin-article-item p {
+    font-size: 0.9em;
+    color: #495057;
+    margin: 0 0 15px 0;
+    flex-grow: 1;
+}
+
+.article-item.admin-article-item .article-date {
+    font-size: 0.8em;
+    color: #999;
+    margin: 0 0 5px 0;
+    font-style: italic;
+}
+
+.article-item.admin-article-item .article-actions {
+    text-align: center;
+    margin-top: auto; /* Pousse les boutons vers le bas */
+    padding: 0 15px;
+}
+
+/* Media query pour les mobiles sur la liste d'articles admin */
+@media (max-width: 768px) {
+    #articlesList {
+        grid-template-columns: 1fr; /* Une seule colonne sur mobile */
+        padding: 0 15px;
+        margin-top: 20px;
+    }
+}

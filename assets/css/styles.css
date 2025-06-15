@@ -1,0 +1,66 @@
+/* --- Styles pour la Liste des articles existants (rendu responsive) --- */
+
+/* Conteneur principal de la liste des articles */
+#articlesList {
+    display: flex;        /* Active Flexbox pour que les articles s'alignent */
+    flex-wrap: wrap;      /* Permet aux articles de passer à la ligne suivante si l'espace manque */
+    justify-content: center; /* Centre les articles horizontalement dans le conteneur */
+    gap: 20px;            /* Ajoute un espace de 20px entre chaque article (horizontalement et verticalement) */
+    padding: 15px 0;      /* Un peu de marge intérieure en haut et en bas de la liste */
+}
+
+/* Style de chaque article individuel dans la liste */
+.article-item {
+    /* Définit comment chaque article se comporte en Flexbox */
+    flex: 1 1 300px;      /* flex-grow, flex-shrink, flex-basis: Chaque article essaiera d'avoir une largeur de base de 300px. Il pourra s'étirer (grow) ou se réduire (shrink) si besoin. */
+    max-width: calc(100% - 30px); /* Empêche les articles de dépasser sur les très petits écrans (prend en compte le gap) */
+    box-sizing: border-box; /* S'assure que le padding et la bordure sont inclus dans la largeur totale de l'élément */
+
+    /* Styles visuels pour que chaque article ressemble à une "carte" */
+    background-color: #ffffff; /* Fond blanc */
+    border: 1px solid #e0e0e0; /* Bordure légère */
+    border-radius: 8px;   /* Coins arrondis */
+    padding: 15px;        /* Marge intérieure */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre douce pour un effet de profondeur */
+    text-align: center;   /* Centre le texte à l'intérieur de chaque carte */
+
+    /* Flexbox interne pour aligner le contenu (image, info, actions) verticalement */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre les éléments internes (image, titres) horizontalement */
+}
+
+/* Ajustements pour les éléments à l'intérieur de l'article */
+.article-item img {
+    width: 100%;          /* L'image prend toute la largeur disponible de sa "carte" */
+    height: auto;         /* Maintient le ratio de l'image */
+    border-radius: 4px;   /* Coins arrondis pour l'image */
+    margin-bottom: 10px;  /* Espace en dessous de l'image */
+}
+
+.article-info {
+    margin-bottom: 15px; /* Espace entre les informations et les boutons */
+    width: 100%;         /* S'assure que ce bloc prend toute la largeur de la carte */
+}
+
+.article-actions {
+    display: flex;        /* Active Flexbox pour les boutons "Modifier" et "Supprimer" */
+    gap: 10px;            /* Espace entre les boutons */
+    width: 100%;          /* Les boutons prennent toute la largeur disponible */
+    justify-content: center; /* Centre les boutons horizontalement */
+    margin-top: auto;     /* Pousse les boutons vers le bas si le contenu de .article-info varie en hauteur */
+}
+
+.article-actions .button {
+    flex: 1;              /* Fait en sorte que les boutons prennent une largeur égale */
+    max-width: 150px;     /* Limite leur largeur pour ne pas être trop étirés */
+    text-align: center;   /* Centre le texte dans les boutons */
+}
+
+/* Optionnel : Ajustement pour les très petits écrans si vous souhaitez que les articles prennent toute la largeur */
+@media (max-width: 480px) {
+    .article-item {
+        flex-basis: 100%;   /* Chaque article prend 100% de la largeur sur les très petits écrans */
+        max-width: 100%;
+    }
+}
