@@ -1,8 +1,8 @@
 // Attendre que le DOM soit entièrement chargé avant d'exécuter le script
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOMContentLoaded : Le DOM est entièrement chargé."); // TRACE 1
+    console.log("DOMContentLoaded : Le DOM est entièrement chargé.");
 
-    // --- Fonction utilitaire pour afficher des messages ---
+    // Fonction utilitaire pour afficher des messages
     function showMessage(targetElement, message, type = 'info') {
         if (!targetElement) {
             console.warn("showMessage: Élément cible non trouvé pour afficher le message.", message);
@@ -38,71 +38,65 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
         }
 
-        // Effacer le message après quelques secondes
         setTimeout(() => {
             targetElement.textContent = '';
-            targetElement.style = ''; // Réinitialise tous les styles
-        }, 5000); // Message disparaît après 5 secondes
+            targetElement.style = '';
+        }, 5000);
     }
 
-    // --- Début du code existant pour la navigation ---
+    // Début du code pour la navigation
     const navToggle = document.querySelector('.nav-toggle');
     const navMenu = document.querySelector('.nav-menu');
     const mainNav = document.querySelector('.main-nav');
 
-    console.log("DOMContentLoaded : Elements de navigation récupérés."); // TRACE 2
+    console.log("DOMContentLoaded : Elements de navigation récupérés.");
 
-    const BREAKPOINT_DESKTOP = 768; // À AJUSTER si votre $breakpoint-mobile est différent
+    const BREAKPOINT_DESKTOP = 768;
 
     if (navToggle && navMenu && mainNav) {
-        console.log("DOMContentLoaded : Éléments de navigation trouvés. Ajout des écouteurs d'événements."); // TRACE 3
+        console.log("DOMContentLoaded : Éléments de navigation trouvés. Ajout des écouteurs d'événements.");
 
-        // Logique de basculement du menu au clic sur le bouton burger
         navToggle.addEventListener('click', function(event) {
             event.stopPropagation();
             this.classList.toggle('active');
             navMenu.classList.toggle('active');
 
             if (navMenu.classList.contains('active')) {
-                // S'assure que le menu prend 100% de la largeur du viewport en mode mobile
                 if (window.innerWidth <= BREAKPOINT_DESKTOP) {
                     navMenu.style.width = '100%';
                 }
             } else {
-                // Réinitialise la largeur si le menu est fermé (pour éviter des problèmes de responsive sur desktop)
-                navMenu.style.width = ''; // Ou 'auto' si nécessaire
+                navMenu.style.width = '';
             }
         });
 
-        // Ajout d'un écouteur sur le redimensionnement pour gérer les transitions
-        // Si l'écran passe du mobile au desktop, le menu doit se fermer
         window.addEventListener('resize', function() {
             if (window.innerWidth > BREAKPOINT_DESKTOP) {
                 if (navMenu.classList.contains('active')) {
                     navToggle.classList.remove('active');
                     navMenu.classList.remove('active');
                 }
-                navMenu.style.width = ''; // Réinitialise la largeur si on passe en desktop
+                navMenu.style.width = '';
             }
         });
 
     } else {
-        console.warn("Certains éléments de navigation sont manquants (nav-toggle, nav-menu ou main-nav)."); // TRACE WARN NAV
+        console.warn("Certains éléments de navigation sont manquants (nav-toggle, nav-menu ou main-nav).");
     }
-    // --- Fin du code existant pour la navigation ---
+    // Fin du code pour la navigation
 
 
-    // --- Début du code de gestion des articles (ajout, suppression, listage) ---
+    // Début du code de gestion des articles (ajout, suppression, listage)
     const articleForm = document.getElementById('articleForm');
-    const messageArea = document.getElementById('messageArea'); // Pour admin-articles.html ou add-article.html
+    const messageArea = document.getElementById('messageArea');
 
-    console.log("Articles : Éléments du formulaire d'article récupérés."); // TRACE 6
+    console.log("Articles : Éléments du formulaire d'article récupérés.");
 
     if (articleForm) {
-        console.log("Articles : Formulaire d'article trouvé. Ajout de l'écouteur de soumission."); // TRACE 7
+        console.log("Articles : Formulaire d'article trouvé. Ajout de l'écouteur de soumission.");
         articleForm.addEventListener('submit', async (event) => {
             event.preventDefault();
-            console.log("Articles : Soumission du formulaire détectée."); // TRACE 8
+            console.log("Articles : Soumission du formulaire détectée.");
 
             const articleData = {
                 titre: document.getElementById('titre').value,
@@ -112,20 +106,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 contenuComplet: document.getElementById('contenuComplet').value
             };
 
-            // Déterminer l'API URL basée sur la page (add_article.php ou update_article.php)
-            let apiUrl = 'backend/add_article.php';
-            const articleIdField = document.getElementById('articleId'); // Champ caché pour l'ID en mode édition
+            // CHEMIN CORRIGÉ POUR add_article.php (ABSOLU)
+            let apiUrl = '/catalogue/backend/add_article.php'; 
+            const articleIdField = document.getElementById('articleId');
 
-            if (articleIdField && articleIdField.value) { // Si l'ID existe, c'est une mise à jour
-                apiUrl = 'backend/update_article.php';
-                articleData.id = articleIdField.value; // Ajoute l'ID aux données pour la mise à jour
+            if (articleIdField && articleIdField.value) {
+                // CHEMIN CORRIGÉ POUR update_article.php (ABSOLU)
+                apiUrl = '/catalogue/backend/update_article.php';
+                articleData.id = articleIdField.value;
                 console.log("Edit Article : Mode édition détecté, ID:", articleData.id);
             } else {
                 console.log("Add Article : Mode ajout détecté.");
             }
 
             try {
-                console.log("Articles : Tentative d'envoi de l'article à l'API via :", apiUrl); // TRACE 9
+                console.log("Articles : Tentative d'envoi de l'article à l'API via :", apiUrl);
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
@@ -135,21 +130,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 const result = await response.json();
-                console.log("Articles : Réponse de l'API d'ajout/mise à jour d'article reçue :", result); // TRACE 10
+                console.log("Articles : Réponse de l'API d'ajout/mise à jour d'article reçue :", result);
 
                 if (result.success) {
                     showMessage(messageArea, result.message || "Opération réussie !", 'success');
                     if (apiUrl.includes('add_article.php')) {
-                        articleForm.reset(); // Vider le formulaire seulement pour l'ajout
-                        console.log("Articles : Article ajouté avec succès. Appel de fetchArticles()."); // TRACE 11
-                        // Si nous sommes sur admin-articles, rafraîchir la liste
+                        articleForm.reset();
+                        console.log("Articles : Article ajouté avec succès. Appel de fetchArticles().");
                         if (document.getElementById('articlesTableBody')) {
                             fetchArticles();
                         }
-                    } else { // C'est une mise à jour
+                    } else {
                         console.log("Articles : Article mis à jour avec succès. Redirection vers l'administration.");
-                        // REDIRECTION AJOUTÉE ICI POUR LA MISE À JOUR
-                        window.location.href = 'admin-articles.html';
+                        window.location.href = 'admin-articles.php';
                     }
                 } else {
                     showMessage(messageArea, "Erreur : " + result.message, 'error');
@@ -157,22 +150,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
             } catch (error) {
                 showMessage(messageArea, "Erreur réseau ou interne lors de l'opération : " + error.message, 'error');
-                console.error('Erreur Fetch lors de l\'ajout/mise à jour:', error); // TRACE ERROR ADD/UPDATE
+                console.error('Erreur Fetch lors de l\'ajout/mise à jour:', error);
             }
         });
     }
 
-    const articlesTableBody = document.getElementById('articlesTableBody'); // Pour admin-articles.html
-    const listMessageArea = document.getElementById('listMessageArea'); // Pour admin-articles.html
+    const articlesTableBody = document.getElementById('articlesTableBody');
+    const listMessageArea = document.getElementById('listMessageArea');
 
-    console.log("Articles : Éléments de la liste d'articles récupérés."); // TRACE 12
+    console.log("Articles : Éléments de la liste d'articles récupérés.");
 
-    const fetchArticlesApiUrl = 'backend/get_articles.php';
-    const deleteArticleApiUrl = 'backend/delete_article.php';
+    // CHEMINS CORRIGÉS POUR get_articles.php et delete_article.php (ABSOLUS)
+    const fetchArticlesApiUrl = '/catalogue/backend/get_articles.php';
+    const deleteArticleApiUrl = '/catalogue/backend/delete_article.php';
 
-    // Fonction pour pré-remplir le formulaire d'édition (utilisée sur edit-article.html)
+    // Fonction pour pré-remplir le formulaire d'édition
     function populateEditForm(article) {
-        // Effacer les champs avant de les remplir pour s'assurer de la propreté
         document.getElementById('articleId').value = '';
         document.getElementById('titre').value = '';
         document.getElementById('imageUrl').value = '';
@@ -187,8 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Assurez-vous que ces ID correspondent aux ID de vos champs dans edit-article.html
-        document.getElementById('articleId').value = article.id_article || ''; // Champ caché pour l'ID
+        document.getElementById('articleId').value = article.id_article || '';
         document.getElementById('titre').value = article.titre || '';
         document.getElementById('imageUrl').value = article.image_url || '';
         document.getElementById('datePublication').value = article.date_publication || '';
@@ -196,18 +188,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('contenuComplet').value = article.contenuComplet || '';
 
         const messageAreaEdit = document.getElementById('messageArea');
-        if (messageAreaEdit) messageAreaEdit.textContent = ''; // Efface tout message de chargement précédent
+        if (messageAreaEdit) messageAreaEdit.textContent = '';
     }
 
 
-    // MODIFICATION DE LA SECTION DE DÉTAILS/ÉDITION POUR GÉRER LES DEUX PAGES
-    // --- Code pour article-details.html ET edit-article.html ---
-    // Vérifie si nous sommes sur la page article-details.html OU edit-article.html
+    // Code pour article-details.html ET edit-article.html
     if (window.location.pathname.includes('article-details.html') || window.location.pathname.includes('edit-article.html')) {
         const urlParams = new URLSearchParams(window.location.search);
         const articleId = urlParams.get('id');
         const isEditPage = window.location.pathname.includes('edit-article.html');
-        const targetElement = isEditPage ? document.getElementById('articleForm') : document.getElementById('article-detail-content'); // Utilisez articleForm
+        const targetElement = isEditPage ? document.getElementById('articleForm') : document.getElementById('article-detail-content');
         const pageTitleElement = document.getElementById('article-title-display') || document.getElementById('edit-page-title');
         const messageAreaSpecific = document.getElementById('messageArea') || document.getElementById('article-detail-message');
 
@@ -215,7 +205,8 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log(`Chargement de l'article ID ${articleId} pour ${isEditPage ? 'édition' : 'affichage des détails'}.`);
             if (messageAreaSpecific) showMessage(messageAreaSpecific, `Chargement de l'article ID ${articleId}...`, 'info');
 
-            fetch(`backend/get_article_by_id.php?id=${articleId}`)
+            // CHEMIN CORRIGÉ POUR get_article_by_id.php (ABSOLU)
+            fetch(`/catalogue/backend/get_article_by_id.php?id=${articleId}`)
                 .then(response => {
                     console.log("Fetch pour détails/édition: Réponse HTTP reçue, statut:", response.status);
                     if (!response.ok) {
@@ -231,18 +222,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (isEditPage) {
                             populateEditForm(article);
                             if (pageTitleElement) pageTitleElement.textContent = `Modifier l'article : ${article.titre || 'Sans titre'}`;
-                            if (messageAreaSpecific) messageAreaSpecific.textContent = ''; // Clear loading message
-                        } else { // article-details.html
+                            if (messageAreaSpecific) messageAreaSpecific.textContent = '';
+                        } else {
                             if (pageTitleElement) pageTitleElement.textContent = article.titre || 'Titre non disponible';
                             if (targetElement) {
                                 const contenuCompletAffiche = article.contenuComplet || 'Contenu complet non disponible.';
                                 const categorieAffiche = article.categorie || 'Non spécifiée';
                                 const datePublicationAffiche = article.date_publication || 'Date non spécifiée';
 
-                                // ****** C'EST LA CORRECTION ICI : LE H2 QUI CAUSAIT LE DUBLON EST SUPPRIMÉ *******
                                 targetElement.innerHTML = `
                                     <figure class="article-image-figure">
-                                        <img src="${article.image_url || 'placeholder.jpg'}" alt="Image de l'article : ${article.titre || 'Non disponible'}">
+                                        <img src="${article.image_url || 'placeholder.jpg'}" alt="Image de l'article : ${titre}">
                                         <figcaption>${article.titre || 'Image de l\'article'}</figcaption>
                                     </figure>
                                     <p><strong>Résumé :</strong> ${article.resume || 'Résumé non disponible'}</p>
@@ -253,16 +243,15 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <p>Catégorie : ${categorieAffiche}</p>
                                     <p>Date de publication : ${datePublicationAffiche}</p>
                                 `;
-                                // ***********************************************************************************
                             }
-                            if (messageAreaSpecific) messageAreaSpecific.textContent = ''; // Clear loading message
+                            if (messageAreaSpecific) messageAreaSpecific.textContent = '';
                         }
                     } else {
                         const message = "Article non trouvé ou données invalides.";
                         if (pageTitleElement) pageTitleElement.textContent = 'Article non trouvé';
                         if (targetElement) targetElement.innerHTML = `<p>${message}</p>`;
                         if (messageAreaSpecific) showMessage(messageAreaSpecific, message, 'error');
-                        if (isEditPage) populateEditForm({}); // Vider les champs du formulaire d'édition
+                        if (isEditPage) populateEditForm({});
                     }
                 })
                 .catch(error => {
@@ -271,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (pageTitleElement) pageTitleElement.textContent = 'Erreur de chargement';
                     if (targetElement) targetElement.innerHTML = `<p>${errorMessage}</p>`;
                     if (messageAreaSpecific) showMessage(messageAreaSpecific, errorMessage, 'error');
-                    if (isEditPage) populateEditForm({}); // Vider les champs du formulaire d'édition
+                    if (isEditPage) populateEditForm({});
                 });
         } else {
             console.log('Aucun ID d\'article trouvé dans l\'URL pour détails/édition.');
@@ -279,26 +268,24 @@ document.addEventListener('DOMContentLoaded', function() {
             if (pageTitleElement) pageTitleElement.textContent = 'Article non spécifié';
             if (targetElement) targetElement.innerHTML = `<p>${message}</p>`;
             if (messageAreaSpecific) showMessage(messageAreaSpecific, message, 'warning');
-            if (isEditPage) populateEditForm({}); // Vider les champs du formulaire d'édition
+            if (isEditPage) populateEditForm({});
         }
     }
     async function fetchArticles() {
-        console.log("fetchArticles() : Fonction appelée."); // TRACE 13
+        console.log("fetchArticles() : Fonction appelée.");
         let targetContainer;
         let targetMessageArea;
 
-        // Déterminer où afficher les articles et les messages en fonction de la page
-        if (document.getElementById('articles-container')) { // Page d'accueil (index.html ou similaire)
+        if (document.getElementById('articles-container')) {
             targetContainer = document.getElementById('articles-container');
             targetMessageArea = document.getElementById('message-area');
-        } else if (document.getElementById('articlesTableBody')) { // Page d'administration (admin-articles.html)
+        } else if (document.getElementById('articlesTableBody')) {
             targetContainer = articlesTableBody;
             targetMessageArea = listMessageArea;
         } else {
             console.warn("fetchArticles(): Aucun conteneur d'articles identifiable trouvé (articles-container ou articlesTableBody).");
-            return; // Sortir si aucun conteneur n'est trouvé
+            return;
         }
-
 
         if (targetMessageArea) {
             showMessage(targetMessageArea, 'Chargement des articles...', 'info');
@@ -312,21 +299,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            console.log("fetchArticles() : Tentative de récupération des articles depuis :", fetchArticlesApiUrl); // TRACE 14
+            console.log("fetchArticles() : Tentative de récupération des articles depuis :", fetchArticlesApiUrl);
             const response = await fetch(fetchArticlesApiUrl);
             if (!response.ok) {
-                // Tenter de lire le message d'erreur du serveur si disponible
                 const errorData = await response.json().catch(() => ({ message: `Erreur HTTP: ${response.status}` }));
                 throw new Error(errorData.message || `Erreur HTTP: ${response.status}`);
             }
             const data = await response.json();
-            console.log("fetchArticles() : Données reçues de l'API :", data); // TRACE 15
+            console.log("fetchArticles() : Données reçues de l'API :", data);
 
             if (data.success && data.articles) {
                 displayArticles(data.articles, targetContainer, targetMessageArea);
-                // Le message de succès sera effacé par setTimeout dans showMessage
-                // if (targetMessageArea) showMessage(targetMessageArea, 'Articles chargés avec succès !', 'success');
-                console.log("fetchArticles() : Articles affichés avec succès."); // TRACE 16
+                console.log("fetchArticles() : Articles affichés avec succès.");
             } else {
                 const message = data.message || "Aucun article trouvé.";
                 if (targetMessageArea) {
@@ -339,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         targetContainer.innerHTML = '<tr><td colspan="6" style="text-align: center;">' + message + '</td></tr>';
                     }
                 }
-                console.warn("fetchArticles() : La réponse de l'API n'indique pas le succès ou ne contient pas d'articles.", data); // TRACE WARN API
+                console.warn("fetchArticles() : La réponse de l'API n'indique pas le succès ou ne contient pas d'articles.", data);
             }
 
         } catch (error) {
@@ -354,14 +338,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     targetContainer.innerHTML = '<tr><td colspan="6" style="text-align: center;">Erreur de chargement.</td></tr>';
                 }
             }
-            console.error("Erreur de récupération des articles:", error); // TRACE ERROR FETCH
+            console.error("Erreur de récupération des articles:", error);
         }
     }
 
     function displayArticles(articles, targetContainer, targetMessageArea) {
-        console.log("displayArticles() : Fonction appelée avec", articles.length, "articles."); // TRACE 17
+        console.log("displayArticles() : Fonction appelée avec", articles.length, "articles.");
         if (targetContainer) {
-            targetContainer.innerHTML = ''; // Nettoyer le contenu existant
+            targetContainer.innerHTML = '';
             if (articles.length === 0) {
                 const noArticlesMessage = '<p style="text-align: center;">Aucun article à afficher pour le moment.</p>';
                 if (targetContainer.id === 'articles-container') {
@@ -378,12 +362,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     const articleCard = document.createElement('article');
                     articleCard.classList.add('article-card');
 
-                    // S'assurer que les propriétés existent pour éviter 'undefined'
                     const imageUrl = article.image_url || 'placeholder.jpg';
                     const titre = article.titre || 'Titre non disponible';
                     const datePublication = article.date_publication || 'Date non spécifiée';
                     const resume = article.resume || 'Résumé non disponible';
-                    const articleId = article.id_article || article.id || ''; // Gérer id_article ou id
+                    const articleId = article.id_article || article.id || '';
 
                     articleCard.innerHTML = `
                         <div class="article-image-container">
@@ -401,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log("GENERATION DU LIEN - ID:", articleId, "TITRE:", titre);
                     targetContainer.appendChild(articleCard);
 
-                } else { // C'est une table (admin-articles.html)
+                } else {
                     const row = targetContainer.insertRow();
                     const articleId = article.id_article || article.id || '';
 
@@ -419,7 +402,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Ajout des écouteurs d'événements de suppression si nous sommes sur la page d'administration
             if (targetContainer.id === 'articlesTableBody') {
                 document.querySelectorAll('.btn-delete').forEach(button => {
                     button.addEventListener('click', async (event) => {
@@ -435,21 +417,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function deleteArticle(id) {
         console.log("SCRIPT: deleteArticle() - Tentative de suppression de l'article ID:", id);
-        const targetMessageArea = document.getElementById('listMessageArea') || document.getElementById('message-area'); // Utilisez la même zone de message pour la liste
+        const targetMessageArea = document.getElementById('listMessageArea') || document.getElementById('message-area');
 
         try {
             const params = new URLSearchParams();
             params.append('id', id);
 
             const response = await fetch(deleteArticleApiUrl, {
-                method: 'POST', // La méthode POST est utilisée car DELETE peut poser des problèmes avec certains serveurs PHP si non configurés
+                method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded' // Important pour URLSearchParams
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: params.toString() // Convertit les paramètres en chaîne pour le corps de la requête
+                body: params.toString()
             });
 
-            // Vérifier si la réponse HTTP est OK (statut 200-299)
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({ message: `Erreur HTTP: ${response.status}` }));
                 throw new Error(errorData.message || `Erreur HTTP: ${response.status}`);
@@ -460,7 +441,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (data.success) {
                 showMessage(targetMessageArea, "Article supprimé avec succès !", 'success');
-                // Rafraîchir la liste des articles après une suppression réussie
                 fetchArticles();
             } else {
                 showMessage(targetMessageArea, "Erreur lors de la suppression : " + data.message, 'error');
@@ -472,12 +452,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // L'appel initial à fetchArticles() DOIT être DANS le DOMContentLoaded
     if (document.getElementById('articles-container') || document.getElementById('articlesTableBody')) {
-        console.log("DOMContentLoaded : Appel initial de fetchArticles()."); // TRACE 20
+        console.log("DOMContentLoaded : Appel initial de fetchArticles().");
         fetchArticles();
     }
 
-    // Ligne de débogage pour s'assurer que le script est bien la dernière version chargée
     console.log("SCRIPT.JS VERSION FINALE : " + new Date().toLocaleString());
-}); // Fin de document.addEventListener('DOMContentLoaded'
+});

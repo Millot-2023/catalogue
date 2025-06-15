@@ -976,7 +976,7 @@ strong, b {
   background-position: center; /* Centre l'image */
   background-repeat: no-repeat; /* Évite la répétition de l'image */
   /* Image par défaut (pour mobile) */
-  background-image: url("../images/banner-articles-mobile-414x400.png"); /* Chemin vers l'image mobile */
+  background-image: url("../../images/banner-articles-mobile-414x400.png"); /* Chemin vers l'image mobile */
   /* Le bloc `img { ... }` est SUPPRIMÉ car l'image est maintenant un background */
   /* Media query pour les DESKTOPS (min-width: 769px) */
   /* Media query pour les MOBILES (max-width: 768px) - les styles de base sont déjà pour mobile */
@@ -1012,7 +1012,7 @@ strong, b {
 }
 @media (min-width: 769px) {
   .page-header-banner {
-    background-image: url("../images/banner-articles-desktop-1920x400.png"); /* Chemin vers l'image desktop */
+    background-image: url("../../images/banner-articles-desktop-1920x400.png"); /* Chemin vers l'image desktop */
   }
 }
 @media (max-width: 768px) {

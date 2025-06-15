@@ -4,19 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modifier un Article</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../sass/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCJW6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <header class="main-header">
         <nav class="main-nav">
-            <a href="index.html" class="logo">Christophe MILLOT</a>
+            <a href="../index.php" class="logo">Christophe MILLOT</a> 
             <div class="nav-right-container">
                 <ul class="nav-menu">
-                    <li><a href="index.html">Accueil</a></li>
-                    <li><a href="articles.html">Articles</a></li>
+                    <li><a href="../index.php">Accueil</a></li>
+                    <li><a href="../articles.php">Articles</a></li>
                     <li><a href="#">Recherches</a></li>
-                    </ul>
+                    <li><a href="admin-articles.php">Admin</a></li> 
+                </ul>
                 <button class="nav-toggle" aria-label="Toggle navigation">
                     <span class="hamburger"></span>
                     <span class="hamburger"></span>
@@ -31,35 +32,29 @@
             <h1 id="edit-page-title">Modifier l'Article</h1>
             <form id="articleForm" class="article-form">
                 <input type="hidden" id="articleId" name="id">
-
                 <div class="form-group">
                     <label for="titre">Titre :</label>
                     <input type="text" id="titre" name="titre" required>
                 </div>
-
                 <div class="form-group">
                     <label for="imageUrl">URL de l'Image :</label>
                     <input type="url" id="imageUrl" name="imageUrl">
                 </div>
-
                 <div class="form-group">
                     <label for="datePublication">Date de Publication :</label>
                     <input type="date" id="datePublication" name="datePublication" required>
                 </div>
-
                 <div class="form-group">
                     <label for="resume">Résumé :</label>
                     <textarea id="resume" name="resume" rows="5" required></textarea>
                 </div>
-
                 <div class="form-group">
                     <label for="contenuComplet">Contenu Complet :</label>
                     <textarea id="contenuComplet" name="contenuComplet" rows="15" required></textarea>
                 </div>
-
                 <button type="submit" class="btn btn-primary">Mettre à jour l'Article</button>
                 <p id="messageArea" class="form-message"></p>
-                <a href="admin-articles.html" class="btn btn-secondary" style="margin-top: 10px;">Retour à l'Administration des Articles</a>
+                <a href="admin-articles.php" class="btn btn-secondary" style="margin-top: 10px;">Retour à l'Administration des Articles</a>
             </form>
         </section>
     </main>
@@ -73,7 +68,6 @@
             </ul>
         </div>
     </footer>
-
-    <script src="js/script.js" defer></script>
+    <script src="../assets/js/script.js" defer></script>
 </body>
 </html>

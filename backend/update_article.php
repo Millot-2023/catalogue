@@ -70,13 +70,13 @@ if (empty($id) || !is_numeric($id) || $id <= 0 || empty($titre) || empty($datePu
 try {
     // Préparer la requête SQL de mise à jour
     // Les noms des colonnes ici DOIVENT correspondre EXACTEMENT à votre BDD (vus dans phpMyAdmin)
-    $sql = "UPDATE articles SET
-                titre = :titre,
-                image_url = :imageUrl,
-                date_publication = :datePublication,
-                resume = :resume,
-                contenu_complet = :contenuComplet
-            WHERE id = :id"; // 'id' est le nom de la colonne dans votre table
+$sql = "UPDATE articles SET
+            titre = :titre,
+            image_url = :imageUrl,
+            date_publication = :datePublication,
+            resume = :resume,
+            contenu_complet = :contenuComplet
+        WHERE id = :id"; // <-- REMETTEZ 'id' ici !
 
     $stmt = $pdo->prepare($sql);
 

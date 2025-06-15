@@ -16,3 +16,5 @@
         </section>
     
     <?php include 'includes/footer.php'; ?>
+
+    <script src="assets/js/script.js" defer></script>
